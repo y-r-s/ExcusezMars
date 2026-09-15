@@ -1,80 +1,1155 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mars Rover · Terrain Lab</title><meta name="description" content="Interactive rover geometry on real HiRISE terrain with measured AI4MARS perception uncertainty."><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ed8a52'/%3E%3Cpath d='M6 21L15 10L25 21' fill='none' stroke='%23121923' stroke-width='3'/%3E%3C/svg%3E"><style>
-:root{color-scheme:dark;--bg:#11161d;--panel:#19212a;--line:#303b47;--muted:#a3afbc;--accent:#f49b62;--text:#ecf0f4;--green:#79d4ad;--red:#ff7e75}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,sans-serif}header{height:78px;padding:0 26px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}h1{font-size:22px;margin:0;font-weight:650;letter-spacing:-.6px}h1 span{color:var(--accent)}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--muted)}.badge{border:1px solid #49503f;color:#d7d5a6;border-radius:20px;padding:6px 12px;font-size:12px}.layout{display:grid;grid-template-columns:280px minmax(350px,1fr) 285px;min-height:740px;height:calc(100vh - 78px)}aside{background:var(--panel);padding:22px 20px;overflow-y:auto}aside:first-child{border-right:1px solid var(--line)}aside:last-child{border-left:1px solid var(--line)}h2{font-size:15px;margin:0 0 16px}h3{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);margin:24px 0 12px}.control{margin:19px 0}.label{display:flex;justify-content:space-between;gap:8px;margin-bottom:9px}.label output{color:var(--accent);font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}.ends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}.rule{border:0;border-top:1px solid var(--line);margin:23px 0}p{margin:8px 0}.note{color:var(--muted);font-size:12px;line-height:1.65}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{padding:12px;background:#111922;border:1px solid #293540;border-radius:8px}.metric small{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.metric strong{font-size:20px;font-weight:550;font-variant-numeric:tabular-nums}.metric em{font-style:normal;font-size:12px;color:var(--muted)}.pressure{margin-top:10px;border:1px solid var(--green);color:var(--green);background:#192d2b;padding:13px;border-radius:8px}.pressure.bad{border-color:var(--red);color:var(--red);background:#352326}.pressure strong{font-size:26px}.pressure small{display:block}input[type=number]{width:66px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:5px;border-radius:4px;font:inherit}button{font:inherit;background:#26323f;border:1px solid #415064;color:var(--text);padding:8px 12px;border-radius:6px;cursor:pointer}button:hover{background:#36475a}button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #f49b62;outline-offset:3px}button.primary{background:var(--accent);color:#20190f;border-color:var(--accent);font-weight:600}.toggle{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#101720;padding:4px;border-radius:8px}.toggle button{padding:9px 2px;border-color:transparent;font-size:13px;background:transparent}.toggle button[aria-pressed=true]{background:#384756;border-color:#64748b}.stage{position:relative;overflow:hidden;background:#25272b;min-height:640px}#viewport{position:absolute;inset:0}#viewport canvas{display:block;width:100%;height:100%;touch-action:none}.stage-top{position:absolute;left:20px;right:20px;top:18px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}.stage-top>div{background:#141d28e8;padding:10px 12px;border-radius:7px}.stage-title{font-size:16px}.stage-top .note{color:#d6c5b8;text-shadow:0 1px 3px #111}.stage-top button{pointer-events:auto;background:#17202bd9}.stage-bottom>.note{background:#141d28e8;padding:6px 10px;border-radius:5px}.stage-bottom{position:absolute;left:18px;right:18px;bottom:18px;display:grid;gap:10px}.transport{display:flex;align-items:center;gap:8px;background:#111923ed;border:1px solid #4e5156;padding:10px;border-radius:9px}.transport .distance{margin-left:auto;font-variant-numeric:tabular-nums}.legend{background:#141d28e8;padding:8px 10px;border-radius:6px;display:flex;gap:13px;flex-wrap:wrap;font-size:12px;color:#eddfd4}.legend span{display:flex;align-items:center;gap:5px}.dot{width:9px;height:9px;border-radius:2px;display:inline-block}.status{font-size:13px;background:#17202bdb;border-left:3px solid var(--accent);padding:9px 12px}.camera{position:relative;margin:12px 0}.camera img{width:100%;aspect-ratio:1.2;object-fit:contain;background:#0c1015;display:block;border:1px solid var(--line);border-radius:6px}.camera figcaption{position:absolute;top:8px;left:8px;font-size:12px;background:#0c1015d9;padding:3px 7px;border-radius:3px}.counter{display:flex;justify-content:space-between;align-items:center;margin-top:14px}.counter strong{font-size:28px;color:var(--red)}details{margin-top:15px}summary{cursor:pointer;color:#d7dfe8;font-size:13px}table{border-collapse:collapse;width:100%;font-size:11px;margin-top:12px}td,th{padding:5px 2px;text-align:center;border-bottom:1px solid var(--line)}th{font-weight:500;color:var(--muted)}a{color:#f4b388}#loading{position:absolute;inset:0;display:grid;place-content:center;background:#18212b;z-index:4;padding:25px;text-align:center}#loading.hidden{display:none}.tiny-map{width:45px;height:45px;border-radius:5px;vertical-align:middle;margin-right:8px}footer{border-top:1px solid var(--line);padding-top:14px;margin-top:20px}.good{color:var(--green)}.bad-text{color:var(--red)}@media(min-width:1600px){.layout{grid-template-columns:310px minmax(350px,1fr) 330px}aside{padding:25px}}@media(max-width:1100px){.layout{grid-template-columns:245px minmax(320px,1fr);height:auto}.layout>aside:last-child{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.stage{min-height:600px;height:calc(100vh - 78px);position:sticky;top:0;align-self:start}.camera img{max-height:230px}.layout>aside:last-child>h2,.layout>aside:last-child>footer{grid-column:1/-1}}@media(max-width:680px){header{padding:14px;height:auto;gap:10px}h1{font-size:18px}.badge{display:none}.layout{display:flex;flex-direction:column}.stage{order:-1;min-height:600px}.layout>aside:last-child{display:block}aside{overflow:visible}.stage-top{left:12px;right:12px}.stage-title{font-size:14px}}
-</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script></head><body>
-<header><div><div class="eyebrow">Exploration systems / 01</div><h1>MARS ROVER <span>Terrain Lab</span></h1></div><span class="badge">GEOMETRY DEMO · NOT A DYNAMICS SIMULATION</span></header>
-<main class="layout"><aside aria-label="Rover configuration"><h2>Rover configuration</h2><p class="note">2,000 kg total mass · 6 wheels<br>Mars gravity 3.71 m/s² · equal static load</p>
-<div class="control"><label class="label" for="diameter">Wheel diameter <output id="diameterValue">800 mm</output></label><input id="diameter" type="range" min="700" max="900" step="10" value="800"><div class="ends"><span>700 mm</span><span>900 mm</span></div></div>
-<div class="control"><label class="label" for="width">Wheel width <output id="widthValue">600 mm</output></label><input id="width" type="range" min="500" max="700" step="10" value="600"><div class="ends"><span>500 mm</span><span>700 mm</span></div></div>
-<div class="control"><label class="label" for="span">Front–rear wheel span <output id="spanValue">2,700 mm</output></label><input id="span" type="range" min="2400" max="3000" step="300" value="2700"><div class="ends"><span>2,400</span><span>2,700</span><span>3,000 mm</span></div></div>
-<p class="note">Body: <span id="bodySize">4,140 × 1,600 mm</span><br>Body length = wheel span + 1,440 mm.</p><hr class="rule"><h2>Wheel–ground contact</h2><div class="metrics"><div class="metric"><small>Load / wheel</small><strong>1,236.7</strong> <em>N</em></div><div class="metric"><small>Contact / wheel</small><strong id="area">—</strong> <em>m²</em></div></div>
-<div class="pressure" id="pressureBox"><small>Estimated contact pressure</small><strong id="pressure">—</strong> kPa<div id="pressureStatus">—</div></div>
-<div class="control"><label class="label" for="threshold">Allowed pressure <span><input id="threshold" type="number" min="1" max="100" step="0.5" value="9"> kPa</span></label></div>
-<p class="note">Illustrative contact patch at 20 mm indentation:<br>A = width × 2√(2rδ − δ²); P = (mg/6) / A.<br>The threshold is a demo assumption, not a measured soil limit.</p><hr class="rule"><div class="metric"><small>Minimum underbody clearance</small><strong id="clearance">—</strong> <em>mm</em></div><p class="note">Minimum of 45 underside samples over the DTM. Chassis attitude follows all six wheel contacts; suspension links are illustrative.</p>
-</aside>
-<section class="stage" aria-label="Interactive three dimensional terrain"><div id="viewport"></div><div id="loading" role="status">Loading HiRISE terrain & measured perception…</div><div class="stage-top"><div><div class="eyebrow">HiRISE / Gale Crater</div><div class="stage-title">Inverted riverbed traverse</div><div class="note">256 × 256 samples · 1 m grid · true vertical scale</div></div><button id="view">Overview</button></div><div class="stage-bottom"><div class="legend"><span><i class="dot" style="background:#b46941"></i>Soil</span><span><i class="dot" style="background:#7193a4"></i>Bedrock</span><span><i class="dot" style="background:#e7bf67"></i>Sand</span><span><i class="dot" style="background:#e24d42"></i>Obstacle proxy</span></div><div class="status" id="status" role="status">Preparing traverse…</div><div class="transport"><button class="primary" id="play">Pause</button><button id="reset">Reset</button><span class="distance"><span id="distance">0.0</span> m</span></div><div class="note">Drag to orbit · scroll to zoom · right-drag to pan</div></div></section>
-<aside aria-label="Perception and camera"><h2>Perception experiment</h2><div class="toggle" aria-label="Perception mode"><button id="perfect" aria-pressed="true">Perfect perception</button><button id="model" aria-pressed="false">My model</button></div><p class="note" id="modeNote">True simulated terrain labels. Detected obstacle proxies stop the rover before contact.</p><div class="counter"><span>Missed-obstacle impacts<small class="note" style="display:block">One count per 4 m patch / lap</small></span><strong id="impacts">0</strong></div><hr class="rule"><h2 style="margin-bottom:4px">AI4MARS camera replay</h2><p class="note" id="frameLabel">Validation frame —</p><figure class="camera"><img id="nav" alt="Real AI4MARS navigation camera image"><figcaption>Navigation camera</figcaption></figure><figure class="camera"><img id="overlay" alt="Actual U-Net segmentation overlay"><figcaption>U-Net prediction overlay</figcaption></figure><p class="note">Real validation images with actual U-Net outputs (128 × 128, enlarged). Replayed with travel distance; not the rover’s live view or the same DTM location.</p><details><summary>Measured confusion matrix · epoch 9</summary><p class="note">Rows: true class. Columns: predicted class. Percent of valid pixels; 182 validation images.</p><table id="matrix"></table><p class="note" id="score"></p></details><footer><p class="note"><b>Scope & provenance</b><br>Terrain coloring is simulated from DTM geometry and the measured confusion matrix. U-Net is not applied directly to orbital data.<br><br>DTM grid: 1 m (resampled from ~1.012 m). Rocks smaller than 1 m are not represented in this data.<br><br>This demo is a geometric illustration, not a dynamics simulation. Obstacle classes and impacts are proxies, not identified real rocks or physical collision forces.</p><p class="note"><a href="https://www.uahirise.org/dtm/dtm.php?ID=PSP_009149_1750" target="_blank" rel="noopener">HiRISE DTM · NASA/JPL/UArizona</a><br><a href="https://huggingface.co/datasets/hassanjbara/AI4MARS" target="_blank" rel="noopener">AI4MARS dataset</a> · <a href="assets/heightmap.png" target="_blank">Heightmap</a></p></footer></aside></main>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mars Rover Terrain Lab</title>
+<meta name="description" content="Interactive rover geometry on real HiRISE terrain with measured AI4MARS perception uncertainty.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23b46941'/%3E%3Cpath d='M6 21L15 10L25 21' fill='none' stroke='%231b1f24' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #e9ecee;
+    --panel: #f7f8f9;
+    --panel-2: #eef1f3;
+    --ink: #1b1f24;
+    --ink-2: #545e69;
+    --ink-3: #86909a;
+    --line: #d3d9de;
+    --scene-bg: #d8c3ae;
+    --good: #0b7f0b;
+    --good-bg: #dff1df;
+    --warn: #9a6500;
+    --warn-bg: #f8ecce;
+    --crit: #c02f2f;
+    --crit-bg: #f7dfde;
+    --impact: #c2257f;
+    --on-ink: #ffffff;
+    --hud: rgb(247 248 249 / 0.9);
+    --shadow: 0 1px 2px rgb(20 24 28 / 0.08), 0 6px 18px rgb(20 24 28 / 0.08);
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --cond: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101214; --panel: #171a1d; --panel-2: #1f2327; --ink: #e7eaee; --ink-2: #a3adb7; --ink-3: #6f7983;
+      --line: #2b3137; --scene-bg: #241c17; --good: #52c452; --good-bg: #16301a; --warn: #f0b43c; --warn-bg: #34290f;
+      --crit: #ef6b6b; --crit-bg: #3a1819; --impact: #f06bb8; --on-ink: #101214; --hud: rgb(23 26 29 / 0.88);
+      --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 22px rgb(0 0 0 / 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101214; --panel: #171a1d; --panel-2: #1f2327; --ink: #e7eaee; --ink-2: #a3adb7; --ink-3: #6f7983;
+    --line: #2b3137; --scene-bg: #241c17; --good: #52c452; --good-bg: #16301a; --warn: #f0b43c; --warn-bg: #34290f;
+    --crit: #ef6b6b; --crit-bg: #3a1819; --impact: #f06bb8; --on-ink: #101214; --hud: rgb(23 26 29 / 0.88);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 22px rgb(0 0 0 / 0.35);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--sans); }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  a { color: inherit; text-underline-offset: 2px; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  .app {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr) 340px;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: "top top top" "left stage right";
+    gap: 12px;
+    height: 100dvh;
+    padding-block: 12px;
+    padding-inline: 16px;
+  }
+
+  /* ---------- header ---------- */
+  .top { grid-area: top; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; min-width: 0; }
+  .brand h1 { margin: 0; font: 600 22px/1.1 var(--cond); letter-spacing: 0.01em; text-wrap: balance; }
+  .brand p { margin: 0; color: var(--ink-2); font-size: 12.5px; }
+  .brand p .num { font-size: 12px; }
+  .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; }
+  .seg button {
+    border: 0; background: transparent; padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-weight: 500; color: var(--ink-2); white-space: nowrap;
+  }
+  .seg button[aria-checked="true"] { background: var(--ink); color: var(--on-ink); }
+  .seg button:not([aria-checked="true"]):hover { color: var(--ink); background: var(--panel); }
+  .mode-wrap { display: flex; align-items: center; gap: 10px; }
+  .mode-wrap .label { font-size: 12px; color: var(--ink-2); }
+
+  /* ---------- panels ---------- */
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    overflow-y: auto; min-height: 0; display: flex; flex-direction: column;
+  }
+  .panel.left { grid-area: left; }
+  .panel.right { grid-area: right; }
+  .sec { padding: 14px 16px 16px; display: grid; gap: 10px; }
+  .sec + .sec { border-top: 1px solid var(--line); }
+  .sec h2 { margin: 0; font: 600 13px/1.2 var(--cond); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .sec h2 small { font: 400 11px var(--mono); letter-spacing: 0; text-transform: none; color: var(--ink-3); }
+  .note { margin: 0; font-size: 11.5px; line-height: 1.55; color: var(--ink-3); }
+
+  .ctl { display: grid; gap: 4px; }
+  .ctl-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .ctl-head label { font-weight: 500; }
+  .ctl-head output { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  input[type="range"] { width: 100%; accent-color: var(--ink); margin: 2px 0; }
+  .ticks { display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--ink-3); }
+
+  dl.readout { margin: 0; display: grid; grid-template-columns: 1fr auto; column-gap: 12px; row-gap: 5px; }
+  dl.readout dt { color: var(--ink-2); }
+  dl.readout dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  dl.readout .big { font-size: 16px; font-weight: 500; }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .pill::before { font: 600 11px var(--mono); }
+  .pill.ok { background: var(--good-bg); color: var(--good); }
+  .pill.ok::before { content: "✓"; }
+  .pill.warn { background: var(--warn-bg); color: var(--warn); }
+  .pill.warn::before { content: "!"; }
+  .pill.crit { background: var(--crit-bg); color: var(--crit); }
+  .pill.crit::before { content: "×"; }
+  .pressure-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); }
+  .pressure-row .num { font-size: 18px; font-weight: 500; }
+
+  .assume { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .assume label { display: grid; gap: 2px; font-size: 11.5px; color: var(--ink-2); }
+  .assume input {
+    width: 100%; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--panel-2); font-family: var(--mono); font-variant-numeric: tabular-nums;
+  }
+
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    border: 1px solid var(--line); background: var(--panel-2); border-radius: 7px; padding: 5px 11px;
+    cursor: pointer; font-size: 13px; white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--ink-3); }
+  .btn[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+  .check { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; cursor: pointer; }
+  .check input { accent-color: var(--ink); }
+
+  /* ---------- stage ---------- */
+  .stage { grid-area: stage; position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--scene-bg); min-height: 0; }
+  #viewport { position: absolute; inset: 0; }
+  #viewport canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  .hud { position: absolute; background: var(--hud); border: 1px solid var(--line); border-radius: 9px; box-shadow: var(--shadow); backdrop-filter: blur(6px); }
+  .hud-status { top: 12px; left: 12px; padding: 8px 12px; display: flex; gap: 16px; align-items: center; }
+  .hud-status .k { font-size: 11px; color: var(--ink-2); line-height: 1.2; }
+  .hud-status .v { font: 500 15px/1.25 var(--mono); font-variant-numeric: tabular-nums; }
+  .hits .v { font-size: 22px; }
+  .hits.flash .v { color: var(--impact); }
+  .hud-cam { top: 12px; right: 12px; padding: 6px; display: flex; gap: 6px; }
+  .hud-bottom { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; pointer-events: none; }
+  .hud-bottom > * { pointer-events: auto; }
+  .hud-bottom .hud { position: static; }
+  .hud-map { padding: 8px; display: grid; gap: 6px; }
+  .hud-map canvas { width: 168px; height: 168px; display: block; border-radius: 4px; image-rendering: pixelated; }
+  .legend { display: grid; grid-template-columns: repeat(2, auto); gap: 2px 10px; font-size: 11px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .legend i.ring { background: transparent; border: 2px solid var(--impact); border-radius: 50%; }
+  .disclaimer {
+    align-self: stretch; padding: 7px 12px; display: flex; flex-wrap: wrap; gap: 4px 18px;
+    font-size: 12px; color: var(--ink); align-items: center;
+  }
+  .disclaimer b { font: 600 12px var(--cond); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+  .disclaimer span + span::before { content: "·"; margin-right: 18px; color: var(--ink-3); }
+  .toast {
+    left: 50%; top: 12px; transform: translate(-50%, -8px); padding: 8px 14px; opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s; border-color: var(--impact); color: var(--impact); font-weight: 500; max-width: min(460px, 70%);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--ink-2); padding: 24px; text-align: center; }
+
+  /* ---------- right panel ---------- */
+  .navcam { margin: 0; display: grid; gap: 8px; }
+  .frame { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 6px; overflow: hidden; background: #000; }
+  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .frame .ov { transition: opacity .25s; }
+  .frame .tag { position: absolute; left: 8px; top: 8px; padding: 2px 7px; border-radius: 5px; font: 500 11px var(--mono); background: rgb(0 0 0 / 0.6); color: #fff; }
+  .navcam figcaption { font-size: 12px; color: var(--ink-2); display: grid; gap: 2px; }
+  .dots { display: flex; gap: 4px; }
+  .dots i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .dots i.on { background: var(--ink); }
+
+  .cm-wrap { overflow-x: auto; }
+  table.cm { border-collapse: separate; border-spacing: 2px; width: 100%; font-size: 12px; }
+  table.cm th { font-weight: 500; color: var(--ink-2); padding: 3px 4px; white-space: nowrap; }
+  table.cm thead th { font-size: 11px; }
+  table.cm tbody th { text-align: left; }
+  table.cm td { text-align: center; padding: 5px 2px; border-radius: 4px; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  table.cm td.diag { font-weight: 600; }
+  table.cm td.hazard { box-shadow: inset 0 0 0 1.5px var(--crit); }
+  .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
+
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "top" "stage" "left" "right"; height: auto; }
+    .stage { height: 64vh; min-height: 420px; }
+    .panel { overflow: visible; }
+  }
+  @media (max-width: 560px) {
+    .hud-map { display: none; }
+    .hud-status { gap: 10px; }
+    .disclaimer { font-size: 11px; }
+    .disclaimer span + span::before { content: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .toast, .frame .ov { transition: none; }
+  }
+</style>
+<script type="importmap">
+  { "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  } }
+</script>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <h1>Mars Rover Terrain Lab</h1>
+      <p>HiRISE <a class="num" id="dtm-id" href="https://www.uahirise.org/dtm/" target="_blank" rel="noopener">DTM</a> · <span class="num" id="dtm-extent">256 × 256 m</span> · Gale Crater · six-wheel rocker-bogie geometry</p>
+    </div>
+    <div class="mode-wrap">
+      <span class="label" id="mode-label">Perception</span>
+      <div class="seg" role="radiogroup" aria-labelledby="mode-label">
+        <button type="button" id="mode-perfect" role="radio" aria-checked="true">Perfect perception</button>
+        <button type="button" id="mode-model" role="radio" aria-checked="false">My model</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="panel left" aria-label="Rover configuration">
+    <section class="sec">
+      <h2>Wheels <small>2000 kg · 6 wheels · g = 3.71</small></h2>
+      <div class="ctl">
+        <div class="ctl-head"><label for="wheel-d">Wheel diameter D</label><output id="wheel-d-out" for="wheel-d">800 mm</output></div>
+        <input type="range" id="wheel-d" min="700" max="900" step="10" value="800">
+      </div>
+      <div class="ctl">
+        <div class="ctl-head"><label for="wheel-b">Wheel width b</label><output id="wheel-b-out" for="wheel-b">600 mm</output></div>
+        <input type="range" id="wheel-b" min="500" max="700" step="10" value="600">
+      </div>
+      <dl class="readout">
+        <dt>Load per wheel W</dt><dd id="r-load">—</dd>
+        <dt>Contact length l</dt><dd id="r-len">—</dd>
+        <dt>Contact area A</dt><dd id="r-area">—</dd>
+      </dl>
+      <div class="pressure-row">
+        <div><div class="note" style="color:var(--ink-2)">Contact pressure p</div><span class="num" id="r-press">—</span></div>
+        <span class="pill ok" id="r-press-status">—</span>
+      </div>
+      <div class="assume">
+        <label for="sink">Assumed sinkage z (mm)<input type="number" id="sink" min="5" max="120" step="5" value="20"></label>
+        <label for="p-allow">Allowed pressure (kPa)<input type="number" id="p-allow" min="1" max="100" step="0.5" value="9"></label>
+      </div>
+      <p class="note">W = m·g / 6 (equal static share, level ground). Rigid-wheel chord at sinkage z: l = 2√(D·z − z²); A = b·l; p = W / A. Both inputs are adjustable demo assumptions, not measured soil limits; ≥ 90% of the limit is flagged as near.</p>
+    </section>
+
+    <section class="sec">
+      <h2>Chassis <small>body width 2040 mm</small></h2>
+      <div class="ctl">
+        <div class="ctl-head"><label for="wheelbase">Front–rear wheel span</label><output id="wheelbase-out" for="wheelbase">2700 mm</output></div>
+        <input type="range" id="wheelbase" min="2400" max="3000" step="300" value="2700" list="wb-ticks">
+        <datalist id="wb-ticks"><option value="2400"></option><option value="2700"></option><option value="3000"></option></datalist>
+        <div class="ticks"><span>2400</span><span>2700</span><span>3000</span></div>
+      </div>
+      <dl class="readout">
+        <dt>Body length</dt><dd id="r-body">—</dd>
+        <dt>Track</dt><dd id="r-track">—</dd>
+        <dt>Flat-ground clearance</dt><dd id="r-clr-nom">—</dd>
+        <dt>Current clearance</dt><dd id="r-clr-now">—</dd>
+        <dt>Route min clearance</dt><dd class="big" id="r-clr-min">—</dd>
+        <dt>Min occurs at</dt><dd id="r-clr-at">—</dd>
+      </dl>
+      <p class="note">Body is the imported 3D model (4272 × 2040 mm at 2700 span); its length stretches as 4272 mm + (span − 2700). Track is measured between wheel centers. Clearance is the smallest vertical gap from the model underside (405 mm above the mean axle) to the DTM surface, sampled every 1 m along the planned route.</p>
+    </section>
+
+    <section class="sec">
+      <h2>Traverse <small id="path-len">route — m</small></h2>
+      <div class="row">
+        <button type="button" class="btn" id="play" aria-pressed="true">Pause</button>
+        <label class="check"><input type="checkbox" id="follow" checked> Follow rover</label>
+        <button type="button" class="btn" id="reset-view">Reset view</button>
+      </div>
+      <div class="ctl">
+        <div class="ctl-head"><label for="speed">Playback speed</label><output id="speed-out" for="speed">6 m/s</output></div>
+        <input type="range" id="speed" min="1" max="20" step="1" value="6">
+      </div>
+      <div class="ctl">
+        <div class="ctl-head"><label for="progress">Route progress</label><output id="progress-out" for="progress">0 m</output></div>
+        <input type="range" id="progress" min="0" max="1000" step="1" value="0">
+      </div>
+      <p class="note">Playback is sped up; real rovers drive about 0.04 m/s. Preset waypoints sit beside the largest rock clusters in this crop. A* plans between them on the current perception map only: big rocks are inflated by 3 m and blocked, sand and bedrock cost more.</p>
+    </section>
+  </aside>
+
+  <main class="stage" aria-label="3D terrain view">
+    <div id="viewport"></div>
+    <div class="loading" id="loading">Loading HiRISE terrain and measured perception…</div>
+
+    <div class="hud hud-status" aria-live="polite">
+      <div><div class="k">Mode</div><div class="v" id="hud-mode">Perfect</div></div>
+      <div class="hits" id="hud-hits-box"><div class="k">Impacts</div><div class="v" id="hud-hits">0</div></div>
+      <div><div class="k">Lap</div><div class="v" id="hud-lap">1</div></div>
+    </div>
+    <div class="hud hud-cam">
+      <button type="button" class="btn" id="view-top">Top view</button>
+      <button type="button" class="btn" id="view-chase">Chase</button>
+    </div>
+    <div class="hud toast" id="toast" role="status"></div>
+    <div class="hud-bottom">
+      <div class="hud hud-map">
+        <canvas id="minimap" width="256" height="256" aria-label="DTM minimap"></canvas>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="hud disclaimer">
+        <b>Data notes</b>
+        <span>Terrain colors are simulated from the DTM and the measured confusion matrix; the U-Net is not applied to orbital data</span>
+        <span>DTM grid 1 m: rocks smaller than 1 m are not in the data</span>
+        <span>Geometry demo, not a dynamics simulation</span>
+      </div>
+    </div>
+  </main>
+
+  <aside class="panel right" aria-label="Perception">
+    <section class="sec">
+      <h2>Navigation camera <small id="nav-idx">— / —</small></h2>
+      <figure class="navcam">
+        <div class="frame">
+          <img id="nav-img" alt="Real AI4MARS navigation camera frame">
+          <img id="nav-ov" class="ov" alt="U-Net segmentation overlay for the same frame">
+          <span class="tag" id="nav-tag">U-Net prediction</span>
+        </div>
+        <div class="dots" id="nav-dots"></div>
+        <figcaption>
+          <span id="nav-cap">—</span>
+          <span class="note" id="nav-note">Real AI4MARS validation frames with actual U-Net predictions (128 × 128, enlarged), replayed as the rover advances. Not the rover's live view and not georegistered to the DTM.</span>
+        </figcaption>
+      </figure>
+      <label class="check"><input type="checkbox" id="nav-overlay" checked> Show segmentation overlay</label>
+    </section>
+
+    <section class="sec">
+      <h2>Measured confusion matrix <small id="cm-miou">mIoU —</small></h2>
+      <div class="cm-wrap"><table class="cm" id="cm"></table></div>
+      <p class="note" id="cm-note">Rows are true classes, columns predicted, row-normalized.</p>
+    </section>
+
+    <section class="sec">
+      <h2>This perception sample <small id="seed-out">seed 42</small></h2>
+      <dl class="readout">
+        <dt>Big-rock clusters (true)</dt><dd id="s-blobs">—</dd>
+        <dt>Clusters missed by model</dt><dd id="s-missed">—</dd>
+        <dt>Cells falsely flagged as rock</dt><dd id="s-false">—</dd>
+        <dt>Planned route</dt><dd id="s-path">—</dd>
+      </dl>
+      <div class="row"><button type="button" class="btn" id="resample">Resample errors</button></div>
+      <p class="note">In My model mode each 1 m cell draws a predicted class from its true class's row of the matrix. Errors are spatially correlated at about 7 m, so a rock cluster tends to be detected or missed as a whole. Missed rocks take the color of the predicted ground class and the planner drives through them.</p>
+      <p class="note"><a href="https://www.uahirise.org/dtm/dtm.php?ID=PSP_009149_1750" id="credit" target="_blank" rel="noopener">HiRISE DTM · NASA/JPL-Caltech/UArizona</a> · <a href="https://huggingface.co/datasets/hassanjbara/AI4MARS" target="_blank" rel="noopener">AI4MARS dataset</a> · <a href="assets/heightmap.png" target="_blank">Heightmap</a></p>
+    </section>
+  </aside>
+</div>
+
 <script type="module">
-const $=id=>document.getElementById(id);
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+// ---------------------------------------------------------------- constants
+const MASS = 2000, G_MARS = 3.71, N_WHEELS = 6;
+// Body mesh: assets/models/mars_export.glb (Blender export, metres, Y-up, symmetric fore/aft).
+// Dimensions below are that model's bounding box; the procedural box is only a fallback.
+const MODEL_URL = "assets/models/mars_export.glb";
+const BODY_W = 2.04, BODY_UNDER_W = 1.9, BODY_H = 1.97, BODY_BASE_L = 4.272, BASE_WB = 2.7;
+const MODEL_UNDERSIDE_Y = 0.805; // underside height above the model origin (ground)
+const AXLE_TO_BODY = MODEL_UNDERSIDE_Y - 0.4; // underside above mean axle, as designed for an 800 mm wheel
+const WHEEL_GAP = 0.08;         // chassis rail to wheel inner face (m)
+const LINK_LAT = BODY_W / 2 + 0.04; // lateral position of rocker/bogie links (m)
+const INFLATE_M = 3.0;          // obstacle inflation for planning (m)
+const EDGE_MARGIN = 6;          // cells kept free at map edge
+const STEP = 0.5;               // path resampling step (m)
+const ROCK = 3;
+const CLASS_COST = [1.0, 1.6, 4.0, 1.0];
+// Same palette as the baked U-Net overlay images, so the legend matches the camera panel.
+const CLASS_COLORS = ["#b46941", "#7193a4", "#e7bf67", "#e24d42"];
+const IMPACT_COLOR = "#c2257f";
+
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const fmt = (v, d = 0) => v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function rng32(a) {
+  return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+const hexRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+
+async function fetchJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return r.json();
+}
+
+let dtm, perc;
 try {
-const THREE=await import('three');const {OrbitControls}=await import('three/addons/controls/OrbitControls.js');
-async function get(url){const r=await fetch(url);if(!r.ok)throw Error(`${url}: ${r.status}`);return r.json()}
-const [dtm,perception]=await Promise.all([get('assets/terrain.json'),get('assets/perception.json')]);
-const N=256,half=127.5,range=dtm.elevation_max_m-dtm.elevation_min_m;
-const heights=Float32Array.from(dtm.values,v=>v*range), palette=['#b46941','#7193a4','#e7bf67','#e24d42'].map(c=>new THREE.Color(c));
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function height(x,z){let u=clamp(x+half,0,254.99999),v=clamp(z+half,0,254.99999),i=Math.floor(u),j=Math.floor(v),a=u-i,b=v-j;return (1-b)*((1-a)*heights[j*N+i]+a*heights[j*N+i+1])+b*((1-a)*heights[(j+1)*N+i]+a*heights[(j+1)*N+i+1])}
-// 4 m coherent category patches inferred from local slope. These are NOT ground-truth mineral labels.
-const tiles=64, truth=new Uint8Array(tiles*tiles), guessed=new Uint8Array(tiles*tiles),slopes=[];
-for(let j=0;j<tiles;j++)for(let i=0;i<tiles;i++){let x=i*4+1.5-half,z=j*4+1.5-half;slopes.push(Math.hypot((height(x+2,z)-height(x-2,z))/4,(height(x,z+2)-height(x,z-2))/4))}
-const sorted=[...slopes].sort((a,b)=>a-b),q=p=>sorted[Math.floor(p*(sorted.length-1))];
-let seed=42;function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}
-for(let k=0;k<truth.length;k++){let s=slopes[k];truth[k]=s>q(.94)?3:s>q(.58)?1:s<q(.22)?2:0;let r=random(),acc=0;guessed[k]=3;for(let c=0;c<4;c++){acc+=perception.probabilities[truth[k]][c];if(r<acc){guessed[k]=c;break}}}
-function tile(x,z){return clamp(Math.floor((z+half)/4),0,63)*64+clamp(Math.floor((x+half)/4),0,63)}
-const viewport=$('viewport'),scene=new THREE.Scene();scene.background=new THREE.Color('#252b32');scene.fog=new THREE.Fog('#252b32',100,310);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));viewport.appendChild(renderer.domElement);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
-const camera=new THREE.PerspectiveCamera(45,1,.1,900),controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.minDistance=5;controls.maxDistance=390;controls.maxPolarAngle=Math.PI*.48;
-scene.add(new THREE.HemisphereLight('#e5ecff','#86573c',2.4));const sun=new THREE.DirectionalLight('#ffe0be',3);sun.position.set(70,100,30);scene.add(sun);
-const geom=new THREE.PlaneGeometry(255,255,255,255);geom.rotateX(-Math.PI/2);for(let i=0;i<heights.length;i++)geom.attributes.position.setY(i,heights[i]);geom.computeVertexNormals();
-const colors=new Float32Array(heights.length*3);geom.setAttribute('color',new THREE.BufferAttribute(colors,3));const terrain=new THREE.Mesh(geom,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,flatShading:true}));scene.add(terrain);
-let mode='perfect',running=true,blocked=false,overview=false,distance=0,impacts=0,lastFrame=-1;const hit=new Set();
-function recolor(){for(let j=0;j<N;j++)for(let i=0;i<N;i++){let t=clamp(Math.floor(j/4),0,63)*64+clamp(Math.floor(i/4),0,63),c=palette[(mode==='perfect'?truth:guessed)[t]];colors.set([c.r,c.g,c.b],(j*N+i)*3)}geom.attributes.color.needsUpdate=true}
-recolor();
-// A closed preset route through the crop, sampled by arc length.
-const route=[];let total=0;for(let i=0;i<=720;i++){let a=i/720*Math.PI*2,x=32*Math.cos(a),z=20*Math.sin(a)+6*Math.sin(2*a);if(i)total+=Math.hypot(x-route[i-1].x,z-route[i-1].z);route.push({x,z,d:total})}
-function routeAt(d){d=((d%total)+total)%total;let i=1;while(route[i].d<d)i++;let a=route[i-1],b=route[i],f=(d-a.d)/(b.d-a.d);return {x:a.x+(b.x-a.x)*f,z:a.z+(b.z-a.z)*f,yaw:Math.atan2(b.x-a.x,b.z-a.z)}}
-const pathPts=route.map(p=>new THREE.Vector3(p.x,height(p.x,p.z)+.09,p.z));scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathPts),new THREE.LineDashedMaterial({color:'#ffe9c6',dashSize:1,gapSize:.8,transparent:true,opacity:.8})).computeLineDistances());
-const rover=new THREE.Group();scene.add(rover);const pose=new THREE.Group();rover.add(pose);
-const hullMat=new THREE.MeshStandardMaterial({color:'#ebd6af',metalness:.35,roughness:.55}),darkMat=new THREE.MeshStandardMaterial({color:'#222932',roughness:.85}),linkMat=new THREE.MeshStandardMaterial({color:'#b2bcc1',metalness:.7,roughness:.35});
-function box(x,y,z,mat,parent){const m=new THREE.Mesh(new THREE.BoxGeometry(x,y,z),mat);parent.add(m);return m}
-const hull=box(1.6,.6,1,hullMat,pose);const deck=box(1.45,.06,2.5,darkMat,pose);deck.position.y=.34;const mast=box(.09,.9,.09,linkMat,pose);mast.position.set(0,.78,1.1);const head=box(.48,.22,.22,hullMat,pose);head.position.set(0,1.28,1.1);
-const wheelGeom=new THREE.CylinderGeometry(1,1,1,12);wheelGeom.rotateZ(Math.PI/2);const wheels=[];for(const side of [-1,1])for(const rank of [-1,0,1]){const m=new THREE.Mesh(wheelGeom,darkMat);rover.add(m);const hub=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,1.04,8).rotateZ(Math.PI/2),linkMat);m.add(hub);wheels.push({mesh:m,side,rank})}
-const links=[];for(let i=0;i<8;i++)links.push(box(.07,1,.07,linkMat,rover));const axisY=new THREE.Vector3(0,1,0);
-function setLink(mesh,a,b){mesh.position.copy(a).add(b).multiplyScalar(.5);const diff=b.clone().sub(a);mesh.scale.y=diff.length();mesh.quaternion.setFromUnitVectors(axisY,diff.normalize())}
-let diameter=.8,width=.6,span=2.7,bodyLength=4.14,pressure=0,clearance=0;
-function configuration(){diameter=+$('diameter').value/1000;width=+$('width').value/1000;span=+$('span').value/1000;bodyLength=span+1.44;$('diameterValue').value=`${Math.round(diameter*1000)} mm`;$('widthValue').value=`${Math.round(width*1000)} mm`;$('spanValue').value=`${Math.round(span*1000).toLocaleString('en-US')} mm`;$('bodySize').textContent=`${Math.round(bodyLength*1000).toLocaleString('en-US')} × 1,600 mm`;hull.scale.z=bodyLength;
-const area=width*2*Math.sqrt(2*(diameter/2)*.02-.02**2);pressure=(2000*3.71/6)/area/1000;$('area').textContent=area.toFixed(3);$('pressure').textContent=pressure.toFixed(2);const limit=+$('threshold').value;const valid=Number.isFinite(limit)&&limit>=1&&limit<=100,exceeded=valid&&pressure>limit;$('pressureBox').classList.toggle('bad',exceeded||!valid);$('pressureStatus').textContent=!valid?'Enter a threshold from 1 to 100 kPa':exceeded?'Above allowed pressure':'Within allowed pressure';updateRover();}
-function updateRover(){const p=routeAt(distance);rover.position.set(p.x,0,p.z);rover.rotation.y=p.yaw;const sin=Math.sin(p.yaw),cos=Math.cos(p.yaw),track=1.6+width+.12;let mean=0;
-for(const w of wheels){const x=w.side*track/2,z=w.rank*span/2,y=height(p.x+x*cos+z*sin,p.z-x*sin+z*cos)+diameter/2;w.mesh.position.set(x,y,z);w.mesh.scale.set(width,diameter/2,diameter/2);w.mesh.rotation.x=-distance/(diameter/2);mean+=y/6}
-const left=wheels.slice(0,3).reduce((s,w)=>s+w.mesh.position.y,0)/3,right=wheels.slice(3).reduce((s,w)=>s+w.mesh.position.y,0)/3;
-const front=(wheels[2].mesh.position.y+wheels[5].mesh.position.y)/2,back=(wheels[0].mesh.position.y+wheels[3].mesh.position.y)/2;
-pose.position.set(0,mean+.65,0);pose.rotation.set(-Math.atan2(front-back,span),0,Math.atan2(right-left,track));pose.updateMatrix();
-let l=0;for(let side=0;side<2;side++){const a=wheels[side*3].mesh.position,b=wheels[side*3+1].mesh.position,c=wheels[side*3+2].mesh.position,mount=new THREE.Vector3((side?1:-1)*.7,0,0).applyMatrix4(pose.matrix);setLink(links[l++],a,b);setLink(links[l++],b,c);setLink(links[l++],mount,a.clone().add(b).multiplyScalar(.5));setLink(links[l++],mount,b.clone().add(c).multiplyScalar(.5))}
-rover.updateMatrixWorld(true);clearance=Infinity;for(let a=0;a<5;a++)for(let b=0;b<9;b++){const v=pose.localToWorld(new THREE.Vector3(-.8+a*.4,-.3,-bodyLength/2+b*bodyLength/8));clearance=Math.min(clearance,v.y-height(v.x,v.z))}$('clearance').textContent=Math.round(clearance*1000).toLocaleString('en-US');$('clearance').classList.toggle('bad-text',clearance<0);
-return new THREE.Vector3(p.x,mean+.7,p.z)}
-function senseAt(d){const p=routeAt(d),set=new Set();for(const dx of [-1,0,1])for(const dz of [-bodyLength/2,0,bodyLength/2])set.add(tile(p.x+dx*Math.cos(p.yaw)+dz*Math.sin(p.yaw),p.z-dx*Math.sin(p.yaw)+dz*Math.cos(p.yaw)));return [...set]}
-function setMode(next){mode=next;$('perfect').setAttribute('aria-pressed',mode==='perfect');$('model').setAttribute('aria-pressed',mode==='model');$('modeNote').textContent=mode==='perfect'?'True simulated terrain labels. Detected obstacle proxies stop the rover before contact.':'Seeded, per-patch errors sampled from your measured confusion matrix. Missed hazards keep their physical terrain but lose their warning color.';recolor();if(blocked){blocked=false;running=true}updateStatus()}
-function updateStatus(){ $('play').textContent=running?'Pause':'Resume';$('status').textContent=blocked?'Obstacle detected — stopped before contact. Switch perception or reset.':running?(mode==='model'?'My model active · missed obstacle proxies are counted on entry.':'Perfect perception · following preset route with obstacle stops.'):'Traverse paused.';$('impacts').textContent=impacts; }
-function reset(){distance=0;impacts=0;hit.clear();running=true;blocked=false;lastFrame=-1;updateStatus();focus(false)}
-function focus(toggle=true){if(toggle)overview=!overview;const p=updateRover();controls.target.copy(overview?new THREE.Vector3(0,height(0,0),0):p);camera.position.copy(controls.target).add(overview?new THREE.Vector3(165,175,165):new THREE.Vector3(12,10,15));$('view').textContent=overview?'Follow rover':'Overview';controls.update()}
-function replay(){const i=Math.floor(distance/12)%perception.frames.length;if(i===lastFrame)return;lastFrame=i;const f=perception.frames[i];$('nav').src=f.image;$('overlay').src=f.overlay;$('frameLabel').textContent=`Frame ${i+1} / ${perception.frames.length} · validation row ${f.row}`}
-for(const id of ['diameter','width','span','threshold'])$(id).addEventListener('input',configuration);$('perfect').onclick=()=>setMode('perfect');$('model').onclick=()=>setMode('model');$('play').onclick=()=>{running=!running;blocked=false;updateStatus()};$('reset').onclick=reset;$('view').onclick=()=>focus();
-$('matrix').innerHTML='<thead><tr><th>True ↓ / Pred →</th><th>Soil</th><th>Bed.</th><th>Sand</th><th>Rock</th></tr></thead><tbody>'+perception.probabilities.map((row,i)=>'<tr><th>'+perception.classes[i]+'</th>'+row.map(v=>`<td>${(v*100).toFixed(1)}</td>`).join('')+'</tr>').join('')+'</tbody>';$('score').textContent=`Validation mIoU ${(perception.miou*100).toFixed(2)}% · pixel accuracy ${(perception.pixel_accuracy*100).toFixed(2)}%. Pixel confusion is transferred to terrain patches as a simulation assumption. No big-rock pixels were predicted by this checkpoint.`;
-function resize(){const r=viewport.getBoundingClientRect();renderer.setSize(r.width,r.height);camera.aspect=r.width/r.height;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(viewport);configuration();focus(false);replay();updateStatus();$('loading').classList.add('hidden');
-let prev=performance.now(),lastTarget=updateRover();function frame(now){const dt=Math.max(0,Math.min((now-prev)/1000,.05));prev=now;if(running){const next=distance+dt*2;const observed=mode==='perfect'?truth:guessed;const ahead=senseAt(next+1);if(ahead.some(k=>observed[k]===3)){running=false;blocked=true;updateStatus()}else{distance=next;for(const k of senseAt(distance)){const lap=Math.floor(distance/total),key=`${lap}:${k}`;if(truth[k]===3&&guessed[k]!==3&&mode==='model'&&!hit.has(key)){hit.add(key);impacts++;$('impacts').textContent=impacts}}}}
-const target=updateRover();if(!overview){const shift=target.clone().sub(lastTarget);camera.position.add(shift);controls.target.add(shift)}lastTarget.copy(target);$('distance').textContent=distance.toFixed(1);replay();controls.update();renderer.render(scene,camera);requestAnimationFrame(frame)}requestAnimationFrame(frame);
-const state=()=>({mode,running,blocked,distance,impacts,diameterMm:diameter*1000,widthMm:width*1000,spanMm:span*1000,bodyLengthMm:bodyLength*1000,pressureKPa:pressure,clearanceMm:clearance*1000,gridSpacingM:1,validationImages:perception.validation_images});
-window.demo={state,setMode,reset,senseAt,truth,guessed,routeAt,total,configuration,advance(d){distance=d;updateRover();replay()},wheelHeights:()=>wheels.map(w=>{const v=w.mesh.getWorldPosition(new THREE.Vector3());return {center:v.y,terrain:height(v.x,v.z),radius:diameter/2}})};
-if(document.modelContext?.registerTool){try{Promise.resolve(document.modelContext.registerTool({name:'configure_rover',description:'Set rover geometry and perception mode in this demo.',inputSchema:{type:'object',properties:{diameterMm:{type:'number',minimum:700,maximum:900,multipleOf:10},widthMm:{type:'number',minimum:500,maximum:700,multipleOf:10},spanMm:{type:'number',enum:[2400,2700,3000]},mode:{type:'string',enum:['perfect','model']}},additionalProperties:false},execute(input){if(!input||typeof input!=='object')throw Error('Expected an object');for(const [k,v]of Object.entries(input)){if(!['diameterMm','widthMm','spanMm','mode'].includes(k))throw Error('Unknown input');if(k==='mode'&&!['perfect','model'].includes(v))throw Error('Invalid mode');if(k==='diameterMm'&&(!Number.isFinite(v)||v<700||v>900||v%10!==0))throw Error('Diameter must be 700–900 in 10 mm steps');if(k==='widthMm'&&(!Number.isFinite(v)||v<500||v>700||v%10!==0))throw Error('Width must be 500–700 in 10 mm steps');if(k==='spanMm'&&![2400,2700,3000].includes(v))throw Error('Invalid span')}for(const [key,id]of [['diameterMm','diameter'],['widthMm','width'],['spanMm','span']])if(input[key]!==undefined)$(id).value=input[key];configuration();if(input.mode)setMode(input.mode);return state()},annotations:{readOnlyHint:false}})).catch(console.warn)}catch(e){console.warn(e)}}
-} catch(error){$('loading').classList.remove('hidden');$('loading').textContent='Unable to load the demo. Check your connection to the Three.js CDN and reload. '+error.message;console.error(error)}
-</script></body></html>
+  [dtm, perc] = await Promise.all([fetchJSON("assets/terrain.json"), fetchJSON("assets/perception.json")]);
+} catch (err) {
+  $("loading").textContent = `Could not load the data in assets/ (${err.message}). Serve the dist folder over HTTP, e.g. python3 -m http.server --directory dist, then open http://localhost:8000. Opening the file directly blocks the data requests.`;
+  throw err;
+}
+$("loading").remove();
+
+const CLASS_NAMES = perc.classes;
+
+// ---------------------------------------------------------------- terrain data
+const N = dtm.width, NN = N * N, C = dtm.grid_spacing_m;
+const HALF = ((N - 1) * C) / 2;
+const RELIEF = dtm.elevation_max_m - dtm.elevation_min_m;
+const E = new Float32Array(NN);
+for (let k = 0; k < NN; k++) E[k] = dtm.values[k] * RELIEF;
+$("dtm-id").textContent = dtm.product_id;
+$("dtm-id").href = dtm.source_page;
+$("dtm-extent").textContent = `${Math.round(N * C)} × ${Math.round(N * C)} m · ${C} m grid · ${RELIEF.toFixed(1)} m relief`;
+$("credit").textContent = `HiRISE DTM · ${dtm.credit}`;
+$("credit").href = dtm.source_page;
+
+const cellOf = (x, z) => clamp(Math.round((z + HALF) / C), 0, N - 1) * N + clamp(Math.round((x + HALF) / C), 0, N - 1);
+const cellX = (k) => (k % N) * C - HALF;
+const cellZ = (k) => ((k / N) | 0) * C - HALF;
+
+// Exact height on the rendered triangle mesh (matches PlaneGeometry triangulation).
+function heightAt(x, z) {
+  const gx = clamp((x + HALF) / C, 0, N - 1.0001), gz = clamp((z + HALF) / C, 0, N - 1.0001);
+  const j = Math.floor(gx), i = Math.floor(gz), fx = gx - j, fz = gz - i;
+  const a = E[i * N + j], b = E[(i + 1) * N + j], c = E[(i + 1) * N + j + 1], d = E[i * N + j + 1];
+  return fx + fz <= 1 ? a + (d - a) * fx + (b - a) * fz : c + (b - c) * (1 - fx) + (d - c) * (1 - fz);
+}
+
+// Slope (deg) and topographic position index (local relief vs 7x7 mean).
+const slope = new Float32Array(NN), tpi = new Float32Array(NN);
+{
+  const S = new Float64Array((N + 1) * (N + 1));
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++)
+    S[(i + 1) * (N + 1) + j + 1] = E[i * N + j] + S[i * (N + 1) + j + 1] + S[(i + 1) * (N + 1) + j] - S[i * (N + 1) + j];
+  const R = 3;
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const k = i * N + j, jl = Math.max(j - 1, 0), jr = Math.min(j + 1, N - 1), iu = Math.max(i - 1, 0), id = Math.min(i + 1, N - 1);
+    const gx = (E[i * N + jr] - E[i * N + jl]) / ((jr - jl) * C), gz = (E[id * N + j] - E[iu * N + j]) / ((id - iu) * C);
+    slope[k] = (Math.atan(Math.hypot(gx, gz)) * 180) / Math.PI;
+    const i0 = Math.max(i - R, 0), i1 = Math.min(i + R, N - 1) + 1, j0 = Math.max(j - R, 0), j1 = Math.min(j + R, N - 1) + 1;
+    const sum = S[i1 * (N + 1) + j1] - S[i0 * (N + 1) + j1] - S[i1 * (N + 1) + j0] + S[i0 * (N + 1) + j0];
+    tpi[k] = E[k] - sum / ((i1 - i0) * (j1 - j0));
+  }
+}
+const pct = (arr, p) => { const s = Float32Array.from(arr).sort(); return s[Math.floor(p * (s.length - 1))]; };
+
+// Rule-based "true" classes derived from the DTM (illustrative proxies, not geological labels).
+const trueCls = new Uint8Array(NN);
+{
+  const sRock = pct(slope, 0.992), tRock = pct(tpi, 0.992), sBed = pct(slope, 0.72), tBed = pct(tpi, 0.9);
+  const tSand = pct(tpi, 0.14), sSand = pct(slope, 0.45);
+  const raw = new Uint8Array(NN);
+  for (let k = 0; k < NN; k++) {
+    raw[k] = slope[k] >= sRock || tpi[k] >= tRock ? ROCK
+      : slope[k] >= sBed || tpi[k] >= tBed ? 1
+      : tpi[k] <= tSand && slope[k] <= sSand ? 2 : 0;
+  }
+  // One 3x3 majority pass over ground classes to remove speckle; rocks stay as-is.
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const k = i * N + j;
+    if (raw[k] === ROCK) { trueCls[k] = ROCK; continue; }
+    const cnt = [0, 0, 0];
+    for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+      const ii = i + di, jj = j + dj;
+      if (ii < 0 || jj < 0 || ii >= N || jj >= N) continue;
+      const c = raw[ii * N + jj]; if (c !== ROCK) cnt[c]++;
+    }
+    let best = raw[k]; for (let c = 0; c < 3; c++) if (cnt[c] > cnt[best]) best = c;
+    trueCls[k] = best;
+  }
+}
+
+// Connected rock clusters (8-neighbour).
+const blobId = new Int32Array(NN).fill(-1);
+const blobs = [];
+for (let k0 = 0; k0 < NN; k0++) {
+  if (trueCls[k0] !== ROCK || blobId[k0] >= 0) continue;
+  const id = blobs.length, stack = [k0], cells = [];
+  blobId[k0] = id;
+  while (stack.length) {
+    const k = stack.pop(); cells.push(k);
+    const i = (k / N) | 0, j = k % N;
+    for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+      const ii = i + di, jj = j + dj, nk = ii * N + jj;
+      if (ii >= 0 && jj >= 0 && ii < N && jj < N && trueCls[nk] === ROCK && blobId[nk] < 0) { blobId[nk] = id; stack.push(nk); }
+    }
+  }
+  let sx = 0, sz = 0; for (const k of cells) { sx += cellX(k); sz += cellZ(k); }
+  blobs.push({ cells, x: sx / cells.length, z: sz / cells.length });
+}
+
+// Preset waypoints: beside the largest rock clusters, spread out, visited in angular order.
+const WAYPOINTS = (() => {
+  const inner = (b) => Math.abs(b.x) < HALF - 16 * C && Math.abs(b.z) < HALF - 16 * C;
+  const picked = [];
+  for (const b of [...blobs].filter(inner).sort((p, q) => q.cells.length - p.cells.length)) {
+    if (picked.every((p) => Math.hypot(p.x - b.x, p.z - b.z) >= 45)) picked.push(b);
+    if (picked.length === 7) break;
+  }
+  for (let a = 0; picked.length < 4; a += Math.PI / 2) picked.push({ x: 70 * Math.cos(a), z: 70 * Math.sin(a) });
+  return picked.sort((p, q) => Math.atan2(p.z, p.x) - Math.atan2(q.z, q.x)).map((p) => cellOf(p.x, p.z));
+})();
+
+// ---------------------------------------------------------------- perception sampling
+// Rows with no validation pixels fall back to identity (always predicted correctly).
+const CONF = perc.probabilities.map((row, i) => { const s = row.reduce((a, b) => a + b, 0); return s > 0 ? row.map((v) => v / s) : row.map((_, j) => +(j === i)); });
+const percCls = new Uint8Array(NN);
+const state = {
+  D: 0.8, B: 0.6, WB: 2.7, sink: 20, pAllow: 9, mode: "perfect", seed: 42,
+  playing: !reduceMotion, speed: 6, follow: true, dist: 0, lap: 1, hits: 0,
+};
+const lapHits = new Set(), revealed = new Set();
+const stats = { missed: 0, falseCells: 0 };
+
+function samplePerception(seed) {
+  const rnd = rng32(seed * 9973 + 17), S = 7, gw = Math.ceil(N / S) + 2;
+  const coarse = new Float32Array(gw * gw).map(() => rnd());
+  const noise = new Float32Array(NN);
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const u = j / S, v = i / S, ju = Math.floor(u), iv = Math.floor(v), fu = u - ju, fv = v - iv;
+    const a = coarse[iv * gw + ju], b = coarse[iv * gw + ju + 1], c = coarse[(iv + 1) * gw + ju], d = coarse[(iv + 1) * gw + ju + 1];
+    noise[i * N + j] = a + (b - a) * fu + (c - a) * fv + (a - b - c + d) * fu * fv + 0.06 * rnd();
+  }
+  // Rank-transform so each cell's draw is exactly uniform while staying spatially correlated.
+  const order = new Uint32Array(NN).map((_, k) => k).sort((p, q) => noise[p] - noise[q]);
+  for (let r = 0; r < NN; r++) {
+    const k = order[r], u = (r + 0.5) / NN, row = CONF[trueCls[k]];
+    let acc = 0, pick = -1;
+    for (let c = 0; c < row.length; c++) { acc += row[c]; if (u < acc) { pick = c; break; } }
+    if (pick < 0) for (let c = row.length - 1; c >= 0; c--) if (row[c] > 0) { pick = c; break; }
+    percCls[k] = pick;
+  }
+  stats.missed = blobs.filter((b) => b.cells.filter((k) => percCls[k] === ROCK).length < b.cells.length / 2).length;
+  stats.falseCells = 0;
+  for (let k = 0; k < NN; k++) if (percCls[k] === ROCK && trueCls[k] !== ROCK) stats.falseCells++;
+}
+const shownCls = () => (state.mode === "perfect" ? trueCls : percCls);
+
+// ---------------------------------------------------------------- planner
+let PX, PZ, M = 0, L = 0;
+
+function astar(s, t, blocked, cost) {
+  const g = new Float64Array(NN).fill(Infinity), came = new Int32Array(NN).fill(-1), closed = new Uint8Array(NN);
+  const hk = new Int32Array(NN * 8), hf = new Float64Array(NN * 8); let hn = 0;
+  const ti = (t / N) | 0, tj = t % N;
+  const h = (k) => C * Math.hypot(((k / N) | 0) - ti, (k % N) - tj);
+  const push = (k, f) => { let i = hn++; while (i > 0) { const p = (i - 1) >> 1; if (hf[p] <= f) break; hk[i] = hk[p]; hf[i] = hf[p]; i = p; } hk[i] = k; hf[i] = f; };
+  const pop = () => { const top = hk[0], lk = hk[--hn], lf = hf[hn]; let i = 0;
+    while (true) { let c = 2 * i + 1; if (c >= hn) break; if (c + 1 < hn && hf[c + 1] < hf[c]) c++; if (hf[c] >= lf) break; hk[i] = hk[c]; hf[i] = hf[c]; i = c; }
+    hk[i] = lk; hf[i] = lf; return top; };
+  g[s] = 0; push(s, h(s));
+  while (hn) {
+    const k = pop(); if (closed[k]) continue; closed[k] = 1; if (k === t) break;
+    const i = (k / N) | 0, j = k % N;
+    for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++) {
+      if (!di && !dj) continue;
+      const ii = i + di, jj = j + dj; if (ii < 0 || jj < 0 || ii >= N || jj >= N) continue;
+      const nk = ii * N + jj; if (blocked[nk] || closed[nk]) continue;
+      if (di && dj && (blocked[i * N + jj] || blocked[ii * N + j])) continue;
+      const ng = g[k] + (di && dj ? Math.SQRT2 : 1) * C * 0.5 * (cost[k] + cost[nk]);
+      if (ng < g[nk]) { g[nk] = ng; came[nk] = k; if (hn < hk.length) push(nk, ng + h(nk)); }
+    }
+  }
+  if (t !== s && came[t] < 0) return null;
+  const out = []; for (let k = t; k !== -1; k = k === s ? -1 : came[k]) out.push(k);
+  return out.reverse();
+}
+
+function nearestFree(k, blocked) {
+  if (!blocked[k]) return k;
+  const i0 = (k / N) | 0, j0 = k % N;
+  for (let r = 1; r < N; r++) for (let di = -r; di <= r; di++) for (let dj = -r; dj <= r; dj++) {
+    if (Math.max(Math.abs(di), Math.abs(dj)) !== r) continue;
+    const i = i0 + di, j = j0 + dj; if (i < 0 || j < 0 || i >= N || j >= N) continue;
+    if (!blocked[i * N + j]) return i * N + j;
+  }
+  return k;
+}
+
+function plan() {
+  const cls = shownCls(), blocked = new Uint8Array(NN), cost = new Float32Array(NN);
+  const R = Math.ceil(INFLATE_M / C), disk = [];
+  for (let di = -R; di <= R; di++) for (let dj = -R; dj <= R; dj++) if (Math.hypot(di, dj) * C <= INFLATE_M) disk.push([di, dj]);
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const k = i * N + j;
+    if (i < EDGE_MARGIN || j < EDGE_MARGIN || i >= N - EDGE_MARGIN || j >= N - EDGE_MARGIN) blocked[k] = 1;
+    cost[k] = CLASS_COST[cls[k]]; // perception classes only, so a missed rock looks like ordinary ground
+    if (cls[k] === ROCK) for (const [di, dj] of disk) {
+      const ii = i + di, jj = j + dj; if (ii >= 0 && jj >= 0 && ii < N && jj < N) blocked[ii * N + jj] = 1;
+    }
+  }
+  const wps = WAYPOINTS.map((k) => nearestFree(k, blocked));
+  let nodes = [];
+  for (let w = 0; w < wps.length; w++) {
+    const a = wps[w], b = wps[(w + 1) % wps.length];
+    const seg = astar(a, b, blocked, cost) ?? [a, b];
+    nodes = nodes.concat(nodes.length ? seg.slice(1) : seg);
+  }
+  nodes.pop(); // closed loop: last == first
+  let xs = nodes.map(cellX), zs = nodes.map(cellZ);
+  const n = xs.length;
+  for (let pass = 0; pass < 3; pass++) {
+    const nx = new Array(n), nz = new Array(n);
+    for (let i = 0; i < n; i++) { let sx = 0, sz = 0; for (let w = -3; w <= 3; w++) { const q = (i + w + n) % n; sx += xs[q]; sz += zs[q]; } nx[i] = sx / 7; nz[i] = sz / 7; }
+    xs = nx; zs = nz;
+  }
+  const cum = [0];
+  for (let i = 1; i <= n; i++) cum.push(cum[i - 1] + Math.hypot(xs[i % n] - xs[i - 1], zs[i % n] - zs[i - 1]));
+  L = cum[n]; M = Math.floor(L / STEP); L = M * STEP;
+  PX = new Float32Array(M); PZ = new Float32Array(M);
+  let seg = 0;
+  for (let m = 0; m < M; m++) {
+    const d = (m * STEP * cum[n]) / L;
+    while (cum[seg + 1] < d) seg++;
+    const t = (d - cum[seg]) / Math.max(1e-6, cum[seg + 1] - cum[seg]);
+    PX[m] = xs[seg] + (xs[(seg + 1) % n] - xs[seg]) * t;
+    PZ[m] = zs[seg] + (zs[(seg + 1) % n] - zs[seg]) * t;
+  }
+}
+
+function pathAt(d, out) {
+  const f = (((d % L) + L) % L) / STEP, i0 = Math.floor(f) % M, i1 = (i0 + 1) % M, t = f - Math.floor(f);
+  out[0] = PX[i0] + (PX[i1] - PX[i0]) * t; out[1] = PZ[i0] + (PZ[i1] - PZ[i0]) * t;
+}
+
+// ---------------------------------------------------------------- rover pose
+const makePose = () => ({
+  hubs: Array.from({ length: 6 }, () => new THREE.Vector3()),
+  fwd: new THREE.Vector3(), left: new THREE.Vector3(), up: new THREE.Vector3(),
+  center: new THREE.Vector3(), quat: new THREE.Quaternion(), mat: new THREE.Matrix4(),
+  cx: 0, cz: 0, yw: 0, bodyL: 0,
+});
+const pose = makePose(), tmpPose = makePose();
+const _p = [0, 0], _a = [0, 0], _b = [0, 0], _v = new THREE.Vector3();
+
+// Hub order: left front/mid/rear (0..2), right front/mid/rear (3..5)
+function computePose(d, P = pose) {
+  const r = state.D / 2;
+  pathAt(d, _p); pathAt(d + 1.2, _a); pathAt(d - 1.2, _b);
+  let fx = _a[0] - _b[0], fz = _a[1] - _b[1]; const fl = Math.hypot(fx, fz) || 1; fx /= fl; fz /= fl;
+  const lx = fz, lz = -fx;
+  const yw = BODY_W / 2 + WHEEL_GAP + state.B / 2;
+  const longs = [state.WB / 2, 0, -state.WB / 2];
+  let sum = 0;
+  for (let s = 0; s < 2; s++) for (let q = 0; q < 3; q++) {
+    const sg = s === 0 ? 1 : -1, x = _p[0] + fx * longs[q] + lx * sg * yw, z = _p[1] + fz * longs[q] + lz * sg * yw;
+    const y = heightAt(x, z) + r;
+    P.hubs[s * 3 + q].set(x, y, z); sum += y;
+  }
+  const hy = (k) => P.hubs[k].y;
+  const tanP = ((hy(0) + hy(3)) / 2 - (hy(2) + hy(5)) / 2) / state.WB;
+  const tanR = ((hy(0) + hy(1) + hy(2)) / 3 - (hy(3) + hy(4) + hy(5)) / 3) / (2 * yw);
+  P.fwd.set(fx, tanP, fz).normalize();
+  P.left.set(lx, tanR, lz).normalize();
+  P.up.crossVectors(P.fwd, P.left).normalize();
+  P.left.crossVectors(P.up, P.fwd).normalize();
+  P.mat.makeBasis(P.left, P.up, P.fwd);
+  P.quat.setFromRotationMatrix(P.mat);
+  P.center.set(_p[0], sum / 6, _p[1]).addScaledVector(P.up, AXLE_TO_BODY + BODY_H / 2);
+  P.cx = _p[0]; P.cz = _p[1]; P.yw = yw; P.bodyL = BODY_BASE_L + (state.WB - BASE_WB);
+  return P;
+}
+
+function clearance(P) {
+  let min = Infinity;
+  for (let a = 0; a <= 8; a++) for (let b = 0; b <= 4; b++) {
+    const u = (a / 8 - 0.5) * P.bodyL, v = (b / 4 - 0.5) * BODY_UNDER_W;
+    _v.copy(P.center).addScaledVector(P.fwd, u).addScaledVector(P.left, v).addScaledVector(P.up, -BODY_H / 2);
+    min = Math.min(min, _v.y - heightAt(_v.x, _v.z));
+  }
+  return min;
+}
+
+let pathMin = { value: 0, at: 0 };
+function computePathClearance() {
+  pathMin = { value: Infinity, at: 0 };
+  for (let d = 0; d < L; d += 1) {
+    const c = clearance(computePose(d, tmpPose));
+    if (c < pathMin.value) pathMin = { value: c, at: d };
+  }
+}
+
+// ---------------------------------------------------------------- three.js scene
+const viewport = $("viewport");
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+viewport.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color();
+scene.fog = new THREE.Fog(0x000000, 220, 620);
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 3000);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.49;
+controls.minDistance = 4;
+controls.maxDistance = 600;
+
+// Reflection map for the imported model only: its metallic PBR materials render black without one.
+const modelEnv = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+scene.add(new THREE.HemisphereLight(0xfff1e2, 0x5b3b2b, 1.35));
+const sun = new THREE.DirectionalLight(0xffffff, 2.3);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+Object.assign(sun.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10, near: 1, far: 200 });
+sun.shadow.bias = -0.0015;
+scene.add(sun, sun.target);
+const SUN_DIR = new THREE.Vector3(-0.75, 0.55, 0.35).normalize();
+
+function applyTheme() {
+  const col = getComputedStyle(document.documentElement).getPropertyValue("--scene-bg").trim() || "#d8c3ae";
+  scene.background.set(col); scene.fog.color.set(col);
+}
+applyTheme();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+// Terrain mesh: one vertex per DTM sample, true vertical scale.
+const terrainGeo = new THREE.PlaneGeometry((N - 1) * C, (N - 1) * C, N - 1, N - 1);
+terrainGeo.rotateX(-Math.PI / 2);
+{ const pos = terrainGeo.attributes.position; for (let k = 0; k < NN; k++) pos.setY(k, E[k]); pos.needsUpdate = true; terrainGeo.computeVertexNormals(); }
+const texData = new Uint8Array(NN * 4);
+const terrainTex = new THREE.DataTexture(texData, N, N, THREE.RGBAFormat);
+terrainTex.magFilter = THREE.NearestFilter; terrainTex.minFilter = THREE.LinearFilter;
+terrainTex.colorSpace = THREE.SRGBColorSpace;
+const terrain = new THREE.Mesh(terrainGeo, new THREE.MeshStandardMaterial({ map: terrainTex, roughness: 1, metalness: 0, flatShading: true }));
+terrain.receiveShadow = true;
+scene.add(terrain);
+
+const CLASS_RGB = CLASS_COLORS.map(hexRgb);
+const IMPACT_RGB = hexRgb(IMPACT_COLOR);
+function paintTerrain() {
+  const cls = shownCls();
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const k = i * N + j, t = (N - 1 - i) * N + j, o = t * 4, e = E[k] / RELIEF;
+    const base = [124 + 70 * e, 90 + 64 * e, 68 + 52 * e];
+    const hit = blobId[k] >= 0 && revealed.has(blobId[k]);
+    const cc = hit ? IMPACT_RGB : CLASS_RGB[cls[k]], w = hit ? 1 : 0.62;
+    for (let c = 0; c < 3; c++) texData[o + c] = base[c] * (1 - w) + cc[c] * w;
+    texData[o + 3] = 255;
+  }
+  terrainTex.needsUpdate = true;
+}
+
+// Rover
+const matBody = new THREE.MeshStandardMaterial({ color: 0xdcd7cf, roughness: 0.7, flatShading: true });
+const matDeck = new THREE.MeshStandardMaterial({ color: 0x8b9098, roughness: 0.8, flatShading: true });
+const matLink = new THREE.MeshStandardMaterial({ color: 0x3c4148, roughness: 0.6, flatShading: true });
+const matWheel = new THREE.MeshStandardMaterial({ color: 0x5b6068, roughness: 0.85, flatShading: true });
+const unitBox = new THREE.BoxGeometry(1, 1, 1);
+const cast = (m) => { m.castShadow = true; return m; };
+
+const body = new THREE.Group();
+const bodyBox = cast(new THREE.Mesh(unitBox, matBody));
+const deck = cast(new THREE.Mesh(unitBox, matDeck));
+const mast = cast(new THREE.Mesh(unitBox, matLink));
+const head = cast(new THREE.Mesh(unitBox, matBody));
+const rtg = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.7, 8), matLink));
+body.add(bodyBox, deck, mast, head, rtg);
+scene.add(body);
+
+let modelBody = null;
+new GLTFLoader().load(MODEL_URL, (gltf) => {
+  modelBody = gltf.scene;
+  modelBody.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material.envMap = modelEnv; o.material.envMapIntensity = 0.8; } });
+  modelBody.position.y = -BODY_H / 2 - MODEL_UNDERSIDE_Y; // model underside -> body underside
+  body.add(modelBody);
+  for (const m of [bodyBox, deck, mast, head, rtg]) m.visible = false;
+  sizeRover();
+}, undefined, (err) => console.warn("Rover model failed to load; showing the box body instead.", err));
+
+const wheels = Array.from({ length: 6 }, () => {
+  const g = new THREE.Group();
+  const tire = cast(new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 12), matWheel));
+  tire.rotation.z = Math.PI / 2;
+  const spokeA = cast(new THREE.Mesh(unitBox, matLink)), spokeB = cast(new THREE.Mesh(unitBox, matLink));
+  g.add(tire, spokeA, spokeB); scene.add(g);
+  return { g, tire, spokeA, spokeB };
+});
+const links = Array.from({ length: 14 }, () => { const m = cast(new THREE.Mesh(unitBox, matLink)); scene.add(m); return m; });
+
+function sizeRover() {
+  const r = state.D / 2, b = state.B, bodyL = BODY_BASE_L + (state.WB - BASE_WB);
+  for (const w of wheels) {
+    w.tire.scale.set(r, b, r);
+    w.spokeA.scale.set(b * 1.04, 0.07, state.D * 0.92);
+    w.spokeB.scale.set(b * 1.04, state.D * 0.92, 0.07);
+  }
+  // Imported model is stretched along its length only, so wheel span still drives body length.
+  if (modelBody) modelBody.scale.set(1, 1, bodyL / BODY_BASE_L);
+  const boxTop = -BODY_H / 2 + 0.55;
+  bodyBox.scale.set(BODY_W, 0.55, bodyL); bodyBox.position.set(0, -BODY_H / 2 + 0.275, 0);
+  deck.scale.set(BODY_W * 0.86, 0.06, bodyL * 0.9); deck.position.set(0, boxTop + 0.03, 0);
+  mast.scale.set(0.08, 1.15, 0.08); mast.position.set(0.5, boxTop + 0.6, bodyL / 2 - 0.4);
+  head.scale.set(0.42, 0.22, 0.24); head.position.set(0.5, boxTop + 1.2, bodyL / 2 - 0.36);
+  rtg.position.set(0, -BODY_H / 2 + 0.3, -bodyL / 2 - 0.2); rtg.rotation.x = 1.0;
+}
+
+const _m = new THREE.Vector3(), _q = new THREE.Quaternion(), X_AXIS = new THREE.Vector3(1, 0, 0);
+function setLink(mesh, A, B, thick = 0.07) {
+  _m.addVectors(A, B).multiplyScalar(0.5);
+  mesh.position.copy(_m);
+  mesh.scale.set(thick, thick, Math.max(0.01, A.distanceTo(B)));
+  mesh.lookAt(B);
+}
+const lp = Array.from({ length: 6 }, () => new THREE.Vector3());
+const bogie = new THREE.Vector3(), pivot = new THREE.Vector3();
+
+function applyPose(P) {
+  body.position.copy(P.center); body.quaternion.copy(P.quat);
+  _q.setFromAxisAngle(X_AXIS, state.dist / (state.D / 2));
+  wheels.forEach((w, k) => { w.g.position.copy(P.hubs[k]); w.g.quaternion.copy(P.quat).multiply(_q); });
+  const inset = P.yw - LINK_LAT;
+  let li = 0;
+  for (let s = 0; s < 2; s++) {
+    const sg = s === 0 ? 1 : -1;
+    for (let q = 0; q < 3; q++) lp[s * 3 + q].copy(P.hubs[s * 3 + q]).addScaledVector(P.left, -sg * inset);
+    const f = lp[s * 3], m = lp[s * 3 + 1], r = lp[s * 3 + 2];
+    bogie.addVectors(f, m).multiplyScalar(0.5).addScaledVector(P.up, 0.32);
+    pivot.copy(P.center).addScaledVector(P.left, sg * LINK_LAT).addScaledVector(P.up, -BODY_H / 2 + 0.08).addScaledVector(P.fwd, -0.2);
+    setLink(links[li++], f, bogie); setLink(links[li++], m, bogie);
+    setLink(links[li++], bogie, pivot, 0.09); setLink(links[li++], pivot, r, 0.09);
+    for (let q = 0; q < 3; q++) setLink(links[li++], lp[s * 3 + q], P.hubs[s * 3 + q], 0.05);
+  }
+  sun.position.copy(P.center).addScaledVector(SUN_DIR, 80);
+  sun.target.position.copy(P.center);
+}
+
+// Planned route drawn just above the surface
+const pathLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8 }));
+scene.add(pathLine);
+function buildPathLine() {
+  const pts = new Float32Array((M + 1) * 3);
+  for (let m = 0; m <= M; m++) { const x = PX[m % M], z = PZ[m % M]; pts.set([x, heightAt(x, z) + 0.25, z], m * 3); }
+  pathLine.geometry.dispose();
+  pathLine.geometry = new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(pts, 3));
+}
+
+// Impact markers
+const markerGroup = new THREE.Group(); scene.add(markerGroup);
+const matMarker = new THREE.MeshBasicMaterial({ color: IMPACT_COLOR, transparent: true, opacity: 0.9 });
+function addMarker(b) {
+  const blob = blobs[b], y = heightAt(blob.x, blob.z);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(Math.max(1.2, Math.sqrt(blob.cells.length) * C * 0.8), 0.08, 6, 28), matMarker);
+  ring.rotation.x = Math.PI / 2; ring.position.set(blob.x, y + 0.15, blob.z);
+  const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 4, 6), matMarker);
+  pin.position.set(blob.x, y + 2, blob.z);
+  markerGroup.add(ring, pin);
+}
+
+// ---------------------------------------------------------------- minimap
+const mini = $("minimap"), mctx = mini.getContext("2d");
+const miniBase = document.createElement("canvas"); miniBase.width = miniBase.height = N;
+// Draw without blocking boot; decode() can stall in background tabs, so redraw once the image arrives.
+const dtmImg = new Image();
+dtmImg.onload = () => { buildMiniBase(); if (M) drawMini(pose); };
+dtmImg.src = "assets/heightmap.png";
+function buildMiniBase() {
+  const c = miniBase.getContext("2d");
+  c.clearRect(0, 0, N, N);
+  if (dtmImg.complete && dtmImg.naturalWidth) c.drawImage(dtmImg, 0, 0, N, N);
+  else { c.fillStyle = "#8a7a6c"; c.fillRect(0, 0, N, N); }
+  const img = c.getImageData(0, 0, N, N), cls = shownCls();
+  for (let k = 0; k < NN; k++) {
+    const hit = blobId[k] >= 0 && revealed.has(blobId[k]), cc = hit ? IMPACT_RGB : CLASS_RGB[cls[k]], w = hit ? 0.95 : 0.45, o = k * 4;
+    for (let ch = 0; ch < 3; ch++) img.data[o + ch] = img.data[o + ch] * (1 - w) + cc[ch] * w;
+  }
+  c.putImageData(img, 0, 0);
+}
+const toMini = (x, z) => [(x + HALF) / C, (z + HALF) / C];
+function drawMini(P) {
+  mctx.drawImage(miniBase, 0, 0);
+  mctx.strokeStyle = "rgba(255,255,255,0.85)"; mctx.lineWidth = 2.5; mctx.beginPath();
+  for (let m = 0; m <= M; m += 2) { const [u, v] = toMini(PX[m % M], PZ[m % M]); m ? mctx.lineTo(u, v) : mctx.moveTo(u, v); }
+  mctx.stroke();
+  mctx.strokeStyle = "#1b1f24"; mctx.lineWidth = 1; mctx.stroke();
+  const [u, v] = toMini(P.cx, P.cz), ang = Math.atan2(P.fwd.z, P.fwd.x);
+  mctx.save(); mctx.translate(u, v); mctx.rotate(ang);
+  mctx.fillStyle = "#ffffff"; mctx.strokeStyle = "#1b1f24"; mctx.lineWidth = 1.5;
+  mctx.beginPath(); mctx.moveTo(9, 0); mctx.lineTo(-6, 6); mctx.lineTo(-3, 0); mctx.lineTo(-6, -6); mctx.closePath(); mctx.fill(); mctx.stroke();
+  mctx.restore();
+}
+$("legend").innerHTML = CLASS_NAMES.map((n, i) => `<span><i style="background:${CLASS_COLORS[i]}"></i>${n}</span>`).join("")
+  + `<span><i class="ring"></i>Impact (missed rock)</span>`;
+
+// ---------------------------------------------------------------- right panel
+const frames = perc.frames;
+frames.forEach((f) => { new Image().src = f.image; new Image().src = f.overlay; });
+$("nav-dots").innerHTML = frames.map(() => "<i></i>").join("");
+let navIdx = -1;
+function updateNavcam(force = false) {
+  const idx = Math.min(frames.length - 1, Math.floor((state.dist / L) * frames.length));
+  if (idx === navIdx && !force) return;
+  navIdx = idx;
+  const f = frames[idx], on = $("nav-overlay").checked;
+  $("nav-img").src = f.image;
+  $("nav-ov").src = f.overlay;
+  $("nav-ov").style.opacity = on ? 1 : 0;
+  $("nav-tag").textContent = on ? "U-Net prediction" : "Raw NAVCAM";
+  $("nav-idx").textContent = `${idx + 1} / ${frames.length}`;
+  $("nav-cap").innerHTML = `AI4MARS train row <span class="num">${f.row}</span> · validation split`;
+  [...$("nav-dots").children].forEach((d, i) => d.classList.toggle("on", i === idx));
+}
+
+function renderConfusion() {
+  const short = ["Soil", "Bedrock", "Sand", "Rock"];
+  const head = `<thead><tr><th scope="col">True \\ Pred</th>${short.map((n, i) => `<th scope="col"><span class="swatch" style="background:${CLASS_COLORS[i]}"></span>${n}</th>`).join("")}</tr></thead>`;
+  const rows = CONF.map((row, i) => `<tr><th scope="row"><span class="swatch" style="background:${CLASS_COLORS[i]}"></span>${short[i]}</th>${row.map((v, j) => {
+    const strong = v > 0.5, cls = [i === j ? "diag" : "", i === ROCK && j !== ROCK && v > 0.02 ? "hazard" : ""].join(" ");
+    return `<td class="${cls}" style="background:color-mix(in srgb, var(--ink) ${Math.round(v * 78)}%, var(--panel-2));color:${strong ? "var(--on-ink)" : "var(--ink)"}">${fmt(v * 100, 1)}</td>`;
+  }).join("")}</tr>`).join("");
+  $("cm").innerHTML = head + `<tbody>${rows}</tbody>`;
+  $("cm-miou").textContent = `mIoU ${fmt(perc.miou * 100, 1)}%`;
+  const cnt = perc.counts;
+  const iou = cnt.map((row, i) => { const tp = row[i], fn = row.reduce((a, b) => a + b, 0) - tp, fp = cnt.reduce((a, r) => a + r[i], 0) - tp; return tp / Math.max(1, tp + fn + fp); });
+  const recall = CONF[ROCK][ROCK];
+  $("cm-note").innerHTML = `Rows are true classes, columns predicted, row-normalized (%). U-Net checkpoint epoch ${perc.checkpoint_epoch}, ${perc.validation_images} validation images; pixel accuracy <span class="num">${fmt(perc.pixel_accuracy * 100, 1)}%</span>. IoU: ${short.map((n, i) => `${n} <span class="num">${fmt(iou[i] * 100, 1)}</span>`).join(" · ")}. Big-rock recall is <span class="num">${fmt(recall * 100, 1)}%</span>${recall === 0 ? ": this checkpoint never predicts Big rock, so every rock is missed in My model mode" : ""}. Red outlines mark rocks predicted as drivable ground.`;
+}
+
+// ---------------------------------------------------------------- readouts
+const hudHitsBox = $("hud-hits-box");
+function pressureNow() {
+  const W = (MASS * G_MARS) / N_WHEELS, z = state.sink / 1000;
+  const len = 2 * Math.sqrt(Math.max(0, state.D * z - z * z)), area = state.B * len;
+  return { W, len, area, p: W / area / 1000 };
+}
+function updateWheelReadout() {
+  const { W, len, area, p } = pressureNow();
+  $("r-load").textContent = `${fmt(W, 1)} N`;
+  $("r-len").textContent = `${fmt(len * 1000, 0)} mm`;
+  $("r-area").textContent = `${fmt(area * 1e4, 0)} cm²`;
+  $("r-press").textContent = `${fmt(p, 2)} kPa`;
+  const ratio = p / state.pAllow, el = $("r-press-status");
+  const level = ratio > 1 ? "crit" : ratio >= 0.9 ? "warn" : "ok";
+  el.className = `pill ${level}`;
+  el.textContent = level === "crit" ? `Over limit +${fmt((ratio - 1) * 100, 0)}%` : level === "warn" ? `Near limit ${fmt(ratio * 100, 0)}%` : `Within limit ${fmt(ratio * 100, 0)}%`;
+  matWheel.color.set(level === "crit" ? 0xa8453f : level === "warn" ? 0x9c7a3a : 0x5b6068);
+}
+function updateChassisReadout() {
+  const bodyL = BODY_BASE_L + (state.WB - BASE_WB);
+  $("r-body").textContent = `${fmt(bodyL * 1000)} × ${fmt(BODY_W * 1000)} mm`;
+  $("r-track").textContent = `${fmt(2 * (BODY_W / 2 + WHEEL_GAP + state.B / 2) * 1000)} mm`;
+  $("r-clr-nom").textContent = `${fmt((state.D / 2 + AXLE_TO_BODY) * 1000)} mm`;
+  $("r-clr-min").textContent = `${fmt(pathMin.value * 1000)} mm`;
+  $("r-clr-min").style.color = pathMin.value < 0 ? "var(--crit)" : "";
+  $("r-clr-at").textContent = `${fmt(pathMin.at)} m`;
+}
+function updatePathReadout() {
+  $("path-len").textContent = `route ${fmt(L)} m`;
+  $("s-blobs").textContent = fmt(blobs.length);
+  $("s-missed").textContent = `${fmt(stats.missed)} (${fmt((stats.missed / Math.max(1, blobs.length)) * 100, 0)}%)`;
+  $("s-false").textContent = fmt(stats.falseCells);
+  $("s-path").textContent = `${fmt(L)} m · ${state.mode === "perfect" ? "true map" : "model map"}`;
+  $("seed-out").textContent = `seed ${state.seed}`;
+}
+function updateHud() {
+  $("hud-mode").textContent = state.mode === "perfect" ? "Perfect" : "My model";
+  $("hud-hits").textContent = state.hits;
+  $("hud-lap").textContent = state.lap;
+}
+
+let toastTimer;
+function toast(msg) {
+  const el = $("toast"); el.textContent = msg; el.classList.add("show");
+  hudHitsBox.classList.add("flash");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.classList.remove("show"); hudHitsBox.classList.remove("flash"); }, 2600);
+}
+
+// ---------------------------------------------------------------- run control
+function viewChase() {
+  computePose(state.dist);
+  controls.target.copy(pose.center);
+  camera.position.copy(pose.center).addScaledVector(pose.fwd, -13).add(new THREE.Vector3(0, 7, 0));
+  controls.update();
+}
+function viewTop() {
+  state.follow = false; $("follow").checked = false;
+  controls.target.set(0, RELIEF / 2, 0);
+  camera.position.set(0, 330, 60);
+  controls.update();
+}
+
+function replan() {
+  plan();
+  buildPathLine();
+  state.dist = 0; state.lap = 1; state.hits = 0;
+  lapHits.clear(); revealed.clear(); markerGroup.clear();
+  paintTerrain(); buildMiniBase(); computePathClearance();
+  updatePathReadout(); updateChassisReadout(); updateHud(); updateNavcam(true);
+  viewChase();
+  drawMini(pose);
+  $("r-clr-now").textContent = `${fmt(clearance(pose) * 1000)} mm`;
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  $("mode-perfect").setAttribute("aria-checked", mode === "perfect");
+  $("mode-model").setAttribute("aria-checked", mode === "model");
+  replan();
+}
+
+function detectHits(P) {
+  const pts = P.hubs.map((h) => [h.x, h.z]);
+  for (const u of [-0.35, 0, 0.35]) pts.push([P.center.x + P.fwd.x * u * P.bodyL, P.center.z + P.fwd.z * u * P.bodyL]);
+  for (const [x, z] of pts) {
+    const k = cellOf(x, z), b = blobId[k];
+    if (b < 0 || lapHits.has(b)) continue;
+    lapHits.add(b); revealed.add(b); state.hits++;
+    addMarker(b); paintTerrain(); buildMiniBase(); updateHud();
+    const seen = CLASS_NAMES[shownCls()[k]];
+    toast(state.mode === "model" ? `Impact #${state.hits}: missed rock (model saw "${seen}")` : `Impact #${state.hits}: smoothed route clipped a known rock`);
+  }
+}
+
+// ---------------------------------------------------------------- UI wiring
+const bindRange = (id, fn) => $(id).addEventListener("input", (e) => fn(+e.target.value));
+let clearanceDirty = false;
+bindRange("wheel-d", (v) => { state.D = v / 1000; $("wheel-d-out").textContent = `${v} mm`; sizeRover(); updateWheelReadout(); clearanceDirty = true; });
+bindRange("wheel-b", (v) => { state.B = v / 1000; $("wheel-b-out").textContent = `${v} mm`; sizeRover(); updateWheelReadout(); clearanceDirty = true; });
+bindRange("wheelbase", (v) => { state.WB = v / 1000; $("wheelbase-out").textContent = `${v} mm`; sizeRover(); clearanceDirty = true; });
+bindRange("speed", (v) => { state.speed = v; $("speed-out").textContent = `${v} m/s`; });
+$("sink").addEventListener("input", (e) => { const v = +e.target.value; if (v > 0) { state.sink = v; updateWheelReadout(); } });
+$("p-allow").addEventListener("input", (e) => { const v = +e.target.value; if (v > 0) { state.pAllow = v; updateWheelReadout(); } });
+
+let scrubbing = false;
+const prog = $("progress");
+prog.addEventListener("pointerdown", () => { scrubbing = true; });
+addEventListener("pointerup", () => { scrubbing = false; });
+prog.addEventListener("input", () => { state.dist = (+prog.value / 1000) * L; });
+
+const playBtn = $("play");
+const syncPlay = () => { playBtn.textContent = state.playing ? "Pause" : "Play"; playBtn.setAttribute("aria-pressed", state.playing); };
+playBtn.addEventListener("click", () => { state.playing = !state.playing; syncPlay(); });
+$("follow").addEventListener("change", (e) => { state.follow = e.target.checked; if (state.follow) viewChase(); });
+$("reset-view").addEventListener("click", () => { state.follow = true; $("follow").checked = true; viewChase(); });
+$("view-chase").addEventListener("click", () => { state.follow = true; $("follow").checked = true; viewChase(); });
+$("view-top").addEventListener("click", viewTop);
+$("mode-perfect").addEventListener("click", () => state.mode !== "perfect" && setMode("perfect"));
+$("mode-model").addEventListener("click", () => state.mode !== "model" && setMode("model"));
+$("resample").addEventListener("click", () => {
+  state.seed++; samplePerception(state.seed);
+  if (state.mode === "model") replan(); else updatePathReadout();
+});
+$("nav-overlay").addEventListener("change", () => updateNavcam(true));
+
+new ResizeObserver(() => {
+  const w = viewport.clientWidth, h = viewport.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}).observe(viewport);
+
+// ---------------------------------------------------------------- boot & loop
+samplePerception(state.seed);
+renderConfusion();
+sizeRover();
+updateWheelReadout();
+syncPlay();
+replan();
+
+// Scriptable hooks for browser checks.
+function snapshot() {
+  return {
+    mode: state.mode, playing: state.playing, distanceM: state.dist, lap: state.lap, impacts: state.hits,
+    diameterMm: state.D * 1000, widthMm: state.B * 1000, spanMm: state.WB * 1000,
+    bodyLengthMm: (BODY_BASE_L + state.WB - BASE_WB) * 1000, pressureKPa: pressureNow().p,
+    routeM: L, routeMinClearanceMm: pathMin.value * 1000, rockClusters: blobs.length, missedClusters: stats.missed, seed: state.seed,
+  };
+}
+function configure({ diameterMm, widthMm, spanMm, mode } = {}) {
+  for (const [v, id] of [[diameterMm, "wheel-d"], [widthMm, "wheel-b"], [spanMm, "wheelbase"]]) {
+    if (v === undefined) continue;
+    $(id).value = v; $(id).dispatchEvent(new Event("input"));
+  }
+  if (mode && mode !== state.mode) setMode(mode);
+  if (clearanceDirty) { clearanceDirty = false; computePathClearance(); updateChassisReadout(); }
+  return snapshot();
+}
+// Drive one full lap without rendering and report impacts.
+function simulateLap(mode = state.mode, seed = state.seed) {
+  state.seed = seed; samplePerception(seed); setMode(mode);
+  for (let d = 0; d < L; d += 0.25) { state.dist = d; computePose(d); applyPose(pose); detectHits(pose); }
+  const out = snapshot(); state.dist = 0; return out;
+}
+window.demo = { state: snapshot, configure, setMode, simulateLap, reset: replan };
+
+if (document.modelContext?.registerTool) {
+  try {
+    Promise.resolve(document.modelContext.registerTool({
+      name: "configure_rover",
+      description: "Set rover geometry and perception mode in this demo.",
+      inputSchema: { type: "object", additionalProperties: false, properties: {
+        diameterMm: { type: "number", minimum: 700, maximum: 900, multipleOf: 10 },
+        widthMm: { type: "number", minimum: 500, maximum: 700, multipleOf: 10 },
+        spanMm: { type: "number", enum: [2400, 2700, 3000] },
+        mode: { type: "string", enum: ["perfect", "model"] },
+      } },
+      execute(input) {
+        if (!input || typeof input !== "object") throw Error("Expected an object");
+        const { diameterMm: d, widthMm: w, spanMm: s, mode: m } = input;
+        if (d !== undefined && (!Number.isFinite(d) || d < 700 || d > 900 || d % 10)) throw Error("Diameter must be 700–900 in 10 mm steps");
+        if (w !== undefined && (!Number.isFinite(w) || w < 500 || w > 700 || w % 10)) throw Error("Width must be 500–700 in 10 mm steps");
+        if (s !== undefined && ![2400, 2700, 3000].includes(s)) throw Error("Span must be 2400, 2700 or 3000 mm");
+        if (m !== undefined && !["perfect", "model"].includes(m)) throw Error("Mode must be perfect or model");
+        return configure(input);
+      },
+      annotations: { readOnlyHint: false },
+    })).catch(console.warn);
+  } catch (e) { console.warn(e); }
+}
+
+let last = performance.now(), frameNo = 0;
+const prevTarget = new THREE.Vector3();
+function frame(now) {
+  const dt = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now; frameNo++;
+  if (state.playing && !scrubbing) {
+    state.dist += state.speed * dt;
+    if (state.dist >= L) { state.dist -= L; state.lap++; lapHits.clear(); updateHud(); }
+  }
+  if (clearanceDirty) { clearanceDirty = false; computePathClearance(); updateChassisReadout(); }
+  prevTarget.copy(pose.center);
+  computePose(state.dist);
+  applyPose(pose);
+  detectHits(pose);
+  if (state.follow) {
+    const delta = _v.subVectors(pose.center, prevTarget);
+    controls.target.add(delta); camera.position.add(delta);
+  }
+  if (frameNo % 6 === 0) {
+    $("r-clr-now").textContent = `${fmt(clearance(pose) * 1000)} mm`;
+    if (!scrubbing) prog.value = Math.round((state.dist / L) * 1000);
+    $("progress-out").textContent = `${fmt(state.dist)} / ${fmt(L)} m`;
+    updateNavcam();
+    drawMini(pose);
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
