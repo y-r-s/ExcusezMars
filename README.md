@@ -104,6 +104,12 @@ Open <http://localhost:8000>. Three.js and OrbitControls load from a CDN, so an 
 
 The demo includes six terrain-following wheels, adjustable diameter/width/wheel span, estimated contact pressure, sampled underbody clearance, perfect/model perception, missed-obstacle encounter counts, and real AI4MARS camera/prediction replay.
 
+When it is running, the demo looks like this:
+
+![Mars Rover Terrain Lab demo running in the browser](mars-rover-demo/demo-screenshot.png)
+
+*Perfect perception at the default 800 × 600 mm wheels and 2,700 mm span. Left: wheel and chassis controls with load, contact pressure (8.25 kPa, near the 9 kPa demo limit), body size, track and clearance readouts. Centre: the imported ARMA body on six terrain-following wheels over the HiRISE crop, coloured by simulated terrain class, with the planned route, minimap, encounter counter and data notes. Right: real AI4MARS validation frames with U-Net prediction overlays and the measured validation confusion matrix, where true big rock is predicted as bedrock 80.4% of the time and never as big rock.*
+
 ### Training result
 
 | Setting / metric | Value |
