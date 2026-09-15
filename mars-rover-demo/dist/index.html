@@ -255,7 +255,7 @@
     </section>
 
     <section class="sec">
-      <h2>Chassis <small>body width 1600 mm</small></h2>
+      <h2>Chassis <small>body width 2040 mm</small></h2>
       <div class="ctl">
         <div class="ctl-head"><label for="wheelbase">Front–rear wheel span</label><output id="wheelbase-out" for="wheelbase">2700 mm</output></div>
         <input type="range" id="wheelbase" min="2400" max="3000" step="300" value="2700" list="wb-ticks">
@@ -270,7 +270,7 @@
         <dt>Route min clearance</dt><dd class="big" id="r-clr-min">—</dd>
         <dt>Min occurs at</dt><dd id="r-clr-at">—</dd>
       </dl>
-      <p class="note">Body length = 4140 mm + (span − 2700); overhangs stay fixed. Track is measured between wheel centers. Clearance is the smallest vertical gap from the body underside (300 mm above the mean axle) to the DTM surface, sampled every 1 m along the planned route.</p>
+      <p class="note">Body is the imported 3D model (4272 × 2040 mm at 2700 span); its length stretches as 4272 mm + (span − 2700). Track is measured between wheel centers. Clearance is the smallest vertical gap from the model underside (405 mm above the mean axle) to the DTM surface, sampled every 1 m along the planned route.</p>
     </section>
 
     <section class="sec">
@@ -362,13 +362,19 @@
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 // ---------------------------------------------------------------- constants
 const MASS = 2000, G_MARS = 3.71, N_WHEELS = 6;
-const BODY_W = 1.6, BODY_H = 0.55, BODY_BASE_L = 4.14, BASE_WB = 2.7;
-const AXLE_TO_BODY = 0.30;      // body underside above mean axle height (m)
-const WHEEL_GAP = 0.12;         // body side to wheel inner face (m)
-const LINK_LAT = 0.86;          // lateral position of rocker/bogie links (m)
+// Body mesh: assets/models/mars_export.glb (Blender export, metres, Y-up, symmetric fore/aft).
+// Dimensions below are that model's bounding box; the procedural box is only a fallback.
+const MODEL_URL = "assets/models/mars_export.glb";
+const BODY_W = 2.04, BODY_UNDER_W = 1.9, BODY_H = 1.97, BODY_BASE_L = 4.272, BASE_WB = 2.7;
+const MODEL_UNDERSIDE_Y = 0.805; // underside height above the model origin (ground)
+const AXLE_TO_BODY = MODEL_UNDERSIDE_Y - 0.4; // underside above mean axle, as designed for an 800 mm wheel
+const WHEEL_GAP = 0.08;         // chassis rail to wheel inner face (m)
+const LINK_LAT = BODY_W / 2 + 0.04; // lateral position of rocker/bogie links (m)
 const INFLATE_M = 3.0;          // obstacle inflation for planning (m)
 const EDGE_MARGIN = 6;          // cells kept free at map edge
 const STEP = 0.5;               // path resampling step (m)
@@ -668,7 +674,7 @@ function computePose(d, P = pose) {
 function clearance(P) {
   let min = Infinity;
   for (let a = 0; a <= 8; a++) for (let b = 0; b <= 4; b++) {
-    const u = (a / 8 - 0.5) * P.bodyL, v = (b / 4 - 0.5) * BODY_W;
+    const u = (a / 8 - 0.5) * P.bodyL, v = (b / 4 - 0.5) * BODY_UNDER_W;
     _v.copy(P.center).addScaledVector(P.fwd, u).addScaledVector(P.left, v).addScaledVector(P.up, -BODY_H / 2);
     min = Math.min(min, _v.y - heightAt(_v.x, _v.z));
   }
@@ -702,6 +708,8 @@ controls.maxPolarAngle = Math.PI * 0.49;
 controls.minDistance = 4;
 controls.maxDistance = 600;
 
+// Reflection map for the imported model only: its metallic PBR materials render black without one.
+const modelEnv = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 scene.add(new THREE.HemisphereLight(0xfff1e2, 0x5b3b2b, 1.35));
 const sun = new THREE.DirectionalLight(0xffffff, 2.3);
 sun.castShadow = true;
@@ -763,6 +771,16 @@ const rtg = cast(new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.7, 8), 
 body.add(bodyBox, deck, mast, head, rtg);
 scene.add(body);
 
+let modelBody = null;
+new GLTFLoader().load(MODEL_URL, (gltf) => {
+  modelBody = gltf.scene;
+  modelBody.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.material.envMap = modelEnv; o.material.envMapIntensity = 0.8; } });
+  modelBody.position.y = -BODY_H / 2 - MODEL_UNDERSIDE_Y; // model underside -> body underside
+  body.add(modelBody);
+  for (const m of [bodyBox, deck, mast, head, rtg]) m.visible = false;
+  sizeRover();
+}, undefined, (err) => console.warn("Rover model failed to load; showing the box body instead.", err));
+
 const wheels = Array.from({ length: 6 }, () => {
   const g = new THREE.Group();
   const tire = cast(new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 12), matWheel));
@@ -780,11 +798,14 @@ function sizeRover() {
     w.spokeA.scale.set(b * 1.04, 0.07, state.D * 0.92);
     w.spokeB.scale.set(b * 1.04, state.D * 0.92, 0.07);
   }
-  bodyBox.scale.set(BODY_W, BODY_H, bodyL);
-  deck.scale.set(BODY_W * 0.86, 0.06, bodyL * 0.9); deck.position.set(0, BODY_H / 2 + 0.03, 0);
-  mast.scale.set(0.08, 1.15, 0.08); mast.position.set(0.5, BODY_H / 2 + 0.6, bodyL / 2 - 0.4);
-  head.scale.set(0.42, 0.22, 0.24); head.position.set(0.5, BODY_H / 2 + 1.2, bodyL / 2 - 0.36);
-  rtg.position.set(0, BODY_H * 0.1, -bodyL / 2 - 0.2); rtg.rotation.x = 1.0;
+  // Imported model is stretched along its length only, so wheel span still drives body length.
+  if (modelBody) modelBody.scale.set(1, 1, bodyL / BODY_BASE_L);
+  const boxTop = -BODY_H / 2 + 0.55;
+  bodyBox.scale.set(BODY_W, 0.55, bodyL); bodyBox.position.set(0, -BODY_H / 2 + 0.275, 0);
+  deck.scale.set(BODY_W * 0.86, 0.06, bodyL * 0.9); deck.position.set(0, boxTop + 0.03, 0);
+  mast.scale.set(0.08, 1.15, 0.08); mast.position.set(0.5, boxTop + 0.6, bodyL / 2 - 0.4);
+  head.scale.set(0.42, 0.22, 0.24); head.position.set(0.5, boxTop + 1.2, bodyL / 2 - 0.36);
+  rtg.position.set(0, -BODY_H / 2 + 0.3, -bodyL / 2 - 0.2); rtg.rotation.x = 1.0;
 }
 
 const _m = new THREE.Vector3(), _q = new THREE.Quaternion(), X_AXIS = new THREE.Vector3(1, 0, 0);
@@ -929,7 +950,7 @@ function updateWheelReadout() {
 }
 function updateChassisReadout() {
   const bodyL = BODY_BASE_L + (state.WB - BASE_WB);
-  $("r-body").textContent = `${fmt(bodyL * 1000)} × 1,600 mm`;
+  $("r-body").textContent = `${fmt(bodyL * 1000)} × ${fmt(BODY_W * 1000)} mm`;
   $("r-track").textContent = `${fmt(2 * (BODY_W / 2 + WHEEL_GAP + state.B / 2) * 1000)} mm`;
   $("r-clr-nom").textContent = `${fmt((state.D / 2 + AXLE_TO_BODY) * 1000)} mm`;
   $("r-clr-min").textContent = `${fmt(pathMin.value * 1000)} mm`;
