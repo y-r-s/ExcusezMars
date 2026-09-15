@@ -1,0 +1,25 @@
+{
+  "track": "B  -  Vehicles & Mobility",
+  "source_dataset": "AI4MARS",
+  "source_url": "https://data.nasa.gov/dataset/ai4mars-a-dataset-for-terrain-aware-autonomous-driving-on-mars",
+  "hf_mirror": "https://huggingface.co/datasets/hassanjbara/AI4MARS",
+  "images_pulled_from_ai4mars": 48,
+  "images_synthetic_dust_augmented": 12,
+  "duty_cycle_trips": 3130,
+  "label_legend": {
+    "0": "soil",
+    "1": "bedrock",
+    "2": "sand",
+    "3": "big_rock",
+    "255": "unlabeled_or_null"
+  },
+  "preconditions": {
+    "crew": 100,
+    "sols": 730,
+    "dust_storm_sols": [
+      180,
+      260
+    ]
+  },
+  "pull_errors": []
+}

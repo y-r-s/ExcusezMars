@@ -1,0 +1,37 @@
+TRACK B  -  Vehicles & Mobility  -  AI4MARS terrain pack
+====================================================
+
+What this is for
+  Terrain-aware route scoring / self-driving surface transport for a
+  100-person settlement across 2 years of duty cycles (battery wear included),
+  with a dust-storm season inside the window.
+
+Source dataset
+  AI4MARS (~35k rover images, ~326k terrain labels)
+  NASA: https://data.nasa.gov/dataset/ai4mars-a-dataset-for-terrain-aware-autonomous-driving-on-mars
+  HF mirror used for slicing: https://huggingface.co/datasets/hassanjbara/AI4MARS
+  Classes: soil (0), bedrock (1), sand (2), big rock (3), unlabeled (255)
+
+What we sliced / simulated
+  SLICED: 48 real Curiosity/AI4MARS image+label pairs (resized 256x256)
+  from the Hugging Face AI4MARS mirror (train split, labeled only).
+  SIMULATED: 12 extra frames with simple dust occlusion for storm robustness.
+  SIMULATED: logistics_duty_cycle_100p_730sol.csv
+      ~4-6 trips/sol x 730 sols for 100 residents (cargo / EVA / inter-module).
+      Includes terrain_risk_score, energy_kwh, payload_kg, battery_soh decay,
+      and dust_storm_flag for sols 180-260.
+
+Files
+  images/          rover frames (.jpg)
+  labels/          matching segmentation masks (.png)
+  label_legend.json
+  logistics_duty_cycle_100p_730sol.csv
+  manifest.json
+
+How to use tonight
+  Segment terrain from images/labels, then score routes in the duty-cycle CSV
+  (or invent a Mars train timetable) under dust_storm_flag + battery_soh.
+
+Attribution
+  See repo root CREDITS.txt, LICENSE, and KNOWN_ISSUES.txt for sources,
+  license gaps, and adversarial checks before you demo.

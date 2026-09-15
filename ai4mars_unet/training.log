@@ -1,0 +1,104 @@
+/Users/juliahong/Projects/Mars-hackathon/15-sep/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Downloaded shard 1/13Downloaded shard 2/13
+
+Downloaded shard 3/13Downloaded shard 4/13
+
+Downloaded shard 5/13
+Downloaded shard 7/13Downloaded shard 6/13
+Downloaded shard 8/13Downloaded shard 9/13
+
+
+Downloaded shard 10/13
+Downloaded shard 11/13Downloaded shard 12/13
+
+Downloaded shard 13/13
+Checked label validity: 1395/18130
+Checked label validity: 2790/18130
+Checked label validity: 4185/18130
+Checked label validity: 5580/18130
+Checked label validity: 6975/18130
+Checked label validity: 8370/18130
+Checked label validity: 9765/18130
+Checked label validity: 11160/18130
+Checked label validity: 12554/18130
+Checked label validity: 13948/18130
+Checked label validity: 15342/18130
+Checked label validity: 16736/18130
+Checked label validity: 18130/18130
+Sampling 1813 from 15899 labeled rows (18130 total)
+Extracted 106/1813 images
+Extracted 234/1813 images
+Extracted 363/1813 images
+Extracted 535/1813 images
+Extracted 677/1813 images
+Extracted 823/1813 images
+Extracted 963/1813 images
+Extracted 1114/1813 images
+Extracted 1273/1813 images
+Extracted 1431/1813 images
+Extracted 1562/1813 images
+Extracted 1697/1813 images
+Extracted 1813/1813 images
+Training on mps: 1631 train, 182 validation
+Epoch 1 step 0/102 loss=1.3926
+Epoch 1 step 25/102 loss=1.0445
+Epoch 1 step 50/102 loss=1.1046
+Epoch 1 step 75/102 loss=0.8778
+Epoch 1 step 100/102 loss=0.6748
+{"epoch": 1, "train_loss": 0.9836335200385717, "val_loss": 1.0452605764275376, "miou": 0.2868422353553701, "iou": [0.36215819753526846, 0.5934063841133599, 0.19180435977285218, 0.0], "pixel_accuracy": 0.637360364087712, "seconds": 17.258896827697754}
+Epoch 2 step 0/102 loss=0.6976
+Epoch 2 step 25/102 loss=0.7643
+Epoch 2 step 50/102 loss=0.6493
+Epoch 2 step 75/102 loss=0.6149
+Epoch 2 step 100/102 loss=0.8899
+{"epoch": 2, "train_loss": 0.7017302254613854, "val_loss": 0.9063437922449558, "miou": 0.28484568243925107, "iou": [0.4598771094725207, 0.5601085302216093, 0.11939709006287429, 0.0], "pixel_accuracy": 0.6353814456032224, "seconds": 9.706964254379272}
+Epoch 3 step 0/102 loss=0.6203
+Epoch 3 step 25/102 loss=0.6612
+Epoch 3 step 50/102 loss=0.5012
+Epoch 3 step 75/102 loss=0.5265
+Epoch 3 step 100/102 loss=0.3748
+{"epoch": 3, "train_loss": 0.6098434768911863, "val_loss": 0.7319340974744288, "miou": 0.353893861117214, "iou": [0.5501470641814281, 0.6341879303686574, 0.2312404499187704, 0.0], "pixel_accuracy": 0.7009526628907309, "seconds": 9.7173490524292}
+Epoch 4 step 0/102 loss=0.4168
+Epoch 4 step 25/102 loss=0.8955
+Epoch 4 step 50/102 loss=0.4422
+Epoch 4 step 75/102 loss=0.4961
+Epoch 4 step 100/102 loss=0.4251
+{"epoch": 4, "train_loss": 0.551471665188064, "val_loss": 0.6111308363376433, "miou": 0.4385354207335989, "iou": [0.622660026989337, 0.7288664942421924, 0.4026151617028663, 0.0], "pixel_accuracy": 0.7805356217216175, "seconds": 9.723010778427124}
+Epoch 5 step 0/102 loss=0.5856
+Epoch 5 step 25/102 loss=0.9131
+Epoch 5 step 50/102 loss=0.3860
+Epoch 5 step 75/102 loss=1.1718
+Epoch 5 step 100/102 loss=0.5167
+{"epoch": 5, "train_loss": 0.5462880097841389, "val_loss": 0.5099422273328007, "miou": 0.4881869463311974, "iou": [0.6292495880434571, 0.7708751718636635, 0.5526230254176688, 0.0], "pixel_accuracy": 0.8133242026070125, "seconds": 9.675470113754272}
+Epoch 6 step 0/102 loss=0.3561
+Epoch 6 step 25/102 loss=0.5035
+Epoch 6 step 50/102 loss=0.3428
+Epoch 6 step 75/102 loss=0.5864
+Epoch 6 step 100/102 loss=0.3425
+{"epoch": 6, "train_loss": 0.48724673228619886, "val_loss": 0.4364135510967333, "miou": 0.4950513739336346, "iou": [0.6969999840200591, 0.8255898986470205, 0.4576156130674586, 0.0], "pixel_accuracy": 0.8369957294832104, "seconds": 10.197859048843384}
+Epoch 7 step 0/102 loss=0.5210
+Epoch 7 step 25/102 loss=0.7338
+Epoch 7 step 50/102 loss=0.4041
+Epoch 7 step 75/102 loss=0.4532
+Epoch 7 step 100/102 loss=0.6135
+{"epoch": 7, "train_loss": 0.4645070476958245, "val_loss": 0.5368482718931689, "miou": 0.4728757313632901, "iou": [0.6406568270732961, 0.770558713422617, 0.4802873849572473, 0.0], "pixel_accuracy": 0.8045667898363603, "seconds": 10.103556871414185}
+Epoch 8 step 0/102 loss=0.5605
+Epoch 8 step 25/102 loss=0.4730
+Epoch 8 step 50/102 loss=0.7528
+Epoch 8 step 75/102 loss=0.2820
+Epoch 8 step 100/102 loss=0.3397
+{"epoch": 8, "train_loss": 0.43194706465056515, "val_loss": 0.5261474788466614, "miou": 0.47866975560373665, "iou": [0.6568858112621148, 0.7832609244640653, 0.47453228668876674, 0.0], "pixel_accuracy": 0.8026502884263288, "seconds": 10.026778936386108}
+Epoch 9 step 0/102 loss=0.2912
+Epoch 9 step 25/102 loss=0.8654
+Epoch 9 step 50/102 loss=0.3534
+Epoch 9 step 75/102 loss=0.3650
+Epoch 9 step 100/102 loss=0.4988
+{"epoch": 9, "train_loss": 0.4278675731571911, "val_loss": 0.3730477657688553, "miou": 0.5188210069822824, "iou": [0.7657613460815832, 0.8721731249106331, 0.43734955693691313, 0.0], "pixel_accuracy": 0.8673007052534966, "seconds": 11.443198919296265}
+Epoch 10 step 0/102 loss=0.4799
+Epoch 10 step 25/102 loss=0.2386
+Epoch 10 step 50/102 loss=0.4728
+Epoch 10 step 75/102 loss=0.5902
+Epoch 10 step 100/102 loss=0.3194
+{"epoch": 10, "train_loss": 0.41386781616558754, "val_loss": 0.45355660364660033, "miou": 0.4829065518585046, "iou": [0.6566361527670526, 0.7959099770831478, 0.4790800775838182, 0.0], "pixel_accuracy": 0.8226071076997703, "seconds": 14.36588191986084}
+Training complete

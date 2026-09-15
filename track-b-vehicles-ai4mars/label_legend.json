@@ -1,0 +1,7 @@
+{
+  "0": "soil",
+  "1": "bedrock",
+  "2": "sand",
+  "3": "big_rock",
+  "255": "unlabeled_or_null"
+}

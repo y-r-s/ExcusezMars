@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+ai4mars_unet/cache/
+ai4mars_unet/HiRISE_Gale.IMG
+*.part
+.sites-runtime/

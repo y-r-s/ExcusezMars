@@ -1,0 +1,127 @@
+{
+  "classes": [
+    "Soil",
+    "Bedrock",
+    "Sand",
+    "Big rock"
+  ],
+  "counts": [
+    [
+      586904,
+      31267,
+      15904,
+      0
+    ],
+    [
+      35962,
+      756359,
+      18334,
+      0
+    ],
+    [
+      95067,
+      19513,
+      115738,
+      0
+    ],
+    [
+      1328,
+      5777,
+      79,
+      0
+    ]
+  ],
+  "probabilities": [
+    [
+      0.925606592280093,
+      0.04931120135630643,
+      0.02508220636360052,
+      0.0
+    ],
+    [
+      0.04436165816531077,
+      0.9330220624063258,
+      0.022616279428363483,
+      0.0
+    ],
+    [
+      0.41276409138669146,
+      0.08472199307045042,
+      0.5025139155428582,
+      0.0
+    ],
+    [
+      0.18485523385300667,
+      0.8041481069042317,
+      0.010996659242761693,
+      0.0
+    ]
+  ],
+  "row_semantics": "true class",
+  "column_semantics": "predicted class",
+  "support_pixels": [
+    634075,
+    810655,
+    230318,
+    7184
+  ],
+  "checkpoint_epoch": 9,
+  "checkpoint_sha256": "940e8eebc4b13eaa41f94f7ac84803b1c3c23d9d57078114c4fe5e90210e444d",
+  "validation_images": 182,
+  "ignore_index": 255,
+  "miou": 0.5188210069822824,
+  "pixel_accuracy": 0.8673007052534966,
+  "frames": [
+    {
+      "row": 10242,
+      "image": "assets/nav-0.jpg",
+      "overlay": "assets/overlay-0.jpg"
+    },
+    {
+      "row": 13630,
+      "image": "assets/nav-1.jpg",
+      "overlay": "assets/overlay-1.jpg"
+    },
+    {
+      "row": 10878,
+      "image": "assets/nav-2.jpg",
+      "overlay": "assets/overlay-2.jpg"
+    },
+    {
+      "row": 11761,
+      "image": "assets/nav-3.jpg",
+      "overlay": "assets/overlay-3.jpg"
+    },
+    {
+      "row": 12516,
+      "image": "assets/nav-4.jpg",
+      "overlay": "assets/overlay-4.jpg"
+    },
+    {
+      "row": 3294,
+      "image": "assets/nav-5.jpg",
+      "overlay": "assets/overlay-5.jpg"
+    },
+    {
+      "row": 9483,
+      "image": "assets/nav-6.jpg",
+      "overlay": "assets/overlay-6.jpg"
+    },
+    {
+      "row": 4028,
+      "image": "assets/nav-7.jpg",
+      "overlay": "assets/overlay-7.jpg"
+    },
+    {
+      "row": 13412,
+      "image": "assets/nav-8.jpg",
+      "overlay": "assets/overlay-8.jpg"
+    },
+    {
+      "row": 18009,
+      "image": "assets/nav-9.jpg",
+      "overlay": "assets/overlay-9.jpg"
+    }
+  ],
+  "frame_note": "Real AI4MARS validation images and actual U-Net predictions at 128x128, enlarged for display; not georegistered to the DTM."
+}
