@@ -7,7 +7,93 @@ This repository contains the completed AI4MARS U-Net baseline, reproducible trai
 
 ## ARMA - The VW Beetle ON MARS
 
-When we started, our objective was to use ML to optimise a vehicle design for Mars. We started by feeding in Mars rover, Earth car data and the payload we want it to be able to carry, what kind of terrain it's dealing with - Mars terrain - obviously. Then we let AI calculate a logical set of data for the vehicle design, including wheel dimension, wheel width, wheelbase length, chassis size etc. After creating the 3d model, we let ML use it to run a simulation on the mars geo data to confirm that it will be able to drive around.
+ARMA explores a simple question: what would a compact, two-person utility vehicle for Mars look like if its design were informed by terrain perception and first-order engineering calculations? We started with the proportions of a VW Beetle and the six-wheel, rocker-bogie concept used by Mars rovers, then defined a **2,000 kg total operating mass**, including the vehicle, cargo and two astronauts. The goal is to connect vehicle geometry, terrain conditions and mobility requirements in one demonstrator.
+
+### Design reference and working configuration
+
+The Beetle provides our compact body reference: **4,140 mm long, 1,600 mm wide, with a 2,400 mm reference wheelbase**. Perseverance provides a planetary mobility reference: approximately **3,000 mm long, 2,700 mm wide, 2,200 mm high and 1,025 kg**, with six wheels and rocker-bogie suspension. These are design references, not interchangeable specifications or evidence that a scaled vehicle will perform the same way. See [NASA's Perseverance rover components](https://science.nasa.gov/mission/mars-2020-perseverance/rover-components/).
+
+Our current demo uses an **800 mm wheel diameter, 600 mm wheel width and 2,700 mm front-to-rear wheel span** as an adjustable baseline. Users can compare diameters of 700-900 mm, widths of 500-700 mm, and spans of 2,400 / 2,700 / 3,000 mm. These values are candidate design choices, not an ML-derived optimum.
+
+### What we actually built
+
+1. **Camera-based terrain perception.** We trained a U-Net from scratch on an AI4MARS subset of 1,813 images, split into 1,631 training and 182 validation images. It predicts soil, bedrock, sand and big rock. The best checkpoint reached **51.88% validation mIoU and 86.73% pixel accuracy** after a ten-epoch run at 128 × 128 resolution. Its big-rock IoU and recall are **0%**, so this baseline cannot establish that a route is obstacle-free.
+2. **Real terrain geometry.** Using Python and rasterio, we extracted a 256 × 256 height sample from a HiRISE DTM of Gale Crater, resampled it to a 1 m grid, and exported normalized JSON heights and a grayscale PNG. Three.js reconstructs the terrain in physical meters with no vertical exaggeration. The current scene uses our imported 3D body model with six terrain-following wheels. Body height follows the six-wheel average, with pitch and roll estimated from the wheel contacts. Suspension links illustrate the rocker-bogie concept rather than solve its mechanical constraints.
+3. **A perception-error experiment.** The terrain's displayed classes are simulated from DTM slope and local relief. A switch applies the U-Net's measured validation confusion matrix with spatially correlated errors. An A* planner connects preset waypoints, treating perceived rocks and a 3 m surrounding buffer as blocked while assigning different costs to other terrain classes. Switching perception replans the route. Missed rock proxies lose their warning color, can enter the planned route, and increment a geometric encounter counter when crossed. These route costs are illustrative, not calibrated energy costs; the smoothed route is not a certified collision-free trajectory. The side panel separately replays real AI4MARS camera images with actual U-Net prediction overlays. Those images are not geographically registered to the DTM.
+
+Together, these components let us explore how design choices and perception failures could affect mobility. **U-Net is not applied directly to orbital data, and the demo does not confirm real-world traversability.** The 1 m grid does not represent sub-meter rocks; wheel-soil forces, slip, structural strength and vehicle dynamics are not simulated.
+
+### Vehicle calculations: wheel loading and contact pressure
+
+We use SI units and Mars gravity `g = 3.71 m/s²`. For total mass `m = 2,000 kg`:
+
+- Total gravitational force: `W = mg = 7,420 N`.
+- Average static load per wheel: `N = W / 6 = 1,236.7 N`.
+
+Equal load sharing is a flat-ground approximation. Individual wheel loads change with slope, cargo placement and obstacle encounters.
+
+For the demo's contact-area comparison, a circular wheel of radius `r` and width `b` uses a **default assumed 20 mm indentation**, `δ = 0.02 m` (adjustable in the interface):
+
+```text
+Contact length L = 2 × sqrt(2rδ - δ²)
+Contact area   A = b × L
+Mean pressure  p = N / A
+```
+
+| Candidate | Wheel diameter × width | Contact area per wheel | Mean contact pressure |
+| --- | --- | --- | --- |
+| Smaller | 700 × 500 mm | 0.117 m² | 10.60 kPa |
+| Current baseline | 800 × 600 mm | 0.150 m² | 8.25 kPa |
+| Larger | 900 × 700 mm | 0.186 m² | 6.66 kPa |
+
+These figures compare geometry at the **same assumed indentation**; they do not predict actual sinkage or prove that the soil can support the rover. The demo's adjustable **9 kPa pressure threshold is illustrative**, not a measured Martian soil limit. A larger contact patch lowers pressure in this approximation, but wider wheels also affect vehicle width, mass and steering resistance. Wheel-soil testing or a calibrated terramechanics model is needed to resolve those trade-offs; see [NASA's terramechanics modeling white paper](https://ntrs.nasa.gov/citations/20220010732).
+
+### Vehicle calculations: body dimensions and clearance
+
+The original Beetle-inspired reference was **4,140 × 1,600 mm**. The current imported 3D body has a **4,272 × 2,040 mm bounding box** at the default 2,700 mm wheel span. These should not be presented as the same geometry.
+
+Using the current body's 2,040 mm width, 600 mm external wheels and the code's 80 mm body-to-wheel gap on each side:
+
+```text
+Wheel-center track = 2,040 + 2 × 80 + 600 = 2,800 mm
+Overall wheel envelope = 2,040 + 2 × (600 + 80) = 3,400 mm
+```
+
+This is the calculated wheel envelope before steering, not a swept-clearance assessment. If 1,600 mm is intended as an overall vehicle-width limit, the current model does not meet it.
+
+The demo links body length to front-to-rear wheel span using `body length = 4,272 mm + (span - 2,700 mm)`. This gives **3,972 / 4,272 / 4,572 mm** body lengths for the three span settings. It is an explicit geometry rule, not a mechanical requirement; a later design could hold body length fixed and vary its overhangs instead.
+
+The modeled underside is **405 mm above the mean axle height**. At an 800 mm wheel diameter, nominal flat-ground clearance is `400 + 405 = 805 mm`. Current clearance is the smallest vertical gap at **45 underside sample points** against the terrain; route-minimum clearance repeats this calculation every 1 m along the planned path. These sampled values change with wheel size, span and terrain, and do not establish continuous collision clearance or account for actual soil sinkage. The contact-pressure indentation setting is not a wheel-soil displacement simulation.
+
+A longer span may improve longitudinal static stability but can reduce breakover clearance. A full stability assessment also needs the loaded center-of-mass height and actual wheel track.
+
+### Vehicle calculations: drive torque and energy
+
+For a first-order, constant-speed uphill estimate:
+
+```text
+Required traction force F = mg × (sin θ + Crr × cos θ)
+Average wheel-end torque = F × r / 6
+Electrical drive power  = F × v / η
+Drive energy per km     = F / (3.6 × η) Wh/km
+```
+
+Here `θ` is slope angle, `Crr` is an assumed effective rolling-resistance coefficient, `v` is speed in m/s, and `η` is battery-to-wheel efficiency. The following scenarios use **800 mm wheels, 0.5 m/s speed and 70% efficiency**. The rolling-resistance coefficients are sensitivity assumptions, not values measured or inferred by our U-Net.
+
+| Scenario | Average wheel-end torque | Electrical drive power | Drive energy |
+| --- | --- | --- | --- |
+| Flat, Crr = 0.05 | 24.7 N·m | 0.265 kW | 147 Wh/km |
+| Flat, Crr = 0.10 | 49.5 N·m | 0.530 kW | 294 Wh/km |
+| Flat, Crr = 0.20 | 98.9 N·m | 1.060 kW | 589 Wh/km |
+| 10° uphill, Crr = 0.10 | 134.6 N·m | 1.442 kW | 801 Wh/km |
+
+These are **planning calculations documented here, not a power simulation implemented in the demo**. The 0.5 m/s assumption is independent of the animation playback speed. They exclude acceleration, turning, significant slip and obstacle climbing, and assume the soil can provide the required traction. They are average wheel-end demands, not motor-shaft ratings or peak motor requirements.
+
+Auxiliary loads must be added separately. For example, a hypothetical continuous **300 W** equipment load adds `300 / (3.6 × 0.5) = 167 Wh/km` at the assumed speed. The flat `Crr = 0.10` scenario would therefore use approximately **461 Wh/km** including that example load. Life support, heating, battery temperature effects and operational reserves have not been sized, so these numbers cannot yet establish battery capacity or range.
+
+### What this means for ARMA
+
+Our current recommendation is to retain **800 × 600 mm wheels and a 2,700 mm span as the comparison baseline**, then test the smaller and larger configurations against the same terrain and mission assumptions. The next engineering inputs are the overall-width constraint, loaded center of mass, target speed and slope, soil properties, drivetrain efficiency and auxiliary power budget. In parallel, big-rock perception needs improvement before its predictions can inform obstacle decisions. The present work provides a reproducible way to compare assumptions and expose failures, rather than a validated final vehicle design.
 
 ### Quick start: rover demo
 
