@@ -177,3 +177,7 @@ Original DTM (~391 MB), downloaded dataset shards and the virtual environment ar
 - The original terrain pack includes synthetic dust frames and simulated logistics; see its `DATA_NOTES.txt`. It was not used as the training subset for this baseline.
 
 See [training notes](ai4mars_unet/README.md) and [demo assumptions](mars-rover-demo/README.md) for details. Source data retain their respective attribution and usage terms; no new blanket license is asserted for third-party assets.
+
+<img src="arma_1.png">
+<img src="arma_2.png">
+<img src="arma_3.png">
