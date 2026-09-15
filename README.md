@@ -91,10 +91,6 @@ These are **planning calculations documented here, not a power simulation implem
 
 Auxiliary loads must be added separately. For example, a hypothetical continuous **300 W** equipment load adds `300 / (3.6 × 0.5) = 167 Wh/km` at the assumed speed. The flat `Crr = 0.10` scenario would therefore use approximately **461 Wh/km** including that example load. Life support, heating, battery temperature effects and operational reserves have not been sized, so these numbers cannot yet establish battery capacity or range.
 
-### What this means for ARMA
-
-Our current recommendation is to retain **800 × 600 mm wheels and a 2,700 mm span as the comparison baseline**, then test the smaller and larger configurations against the same terrain and mission assumptions. The next engineering inputs are the overall-width constraint, loaded center of mass, target speed and slope, soil properties, drivetrain efficiency and auxiliary power budget. In parallel, big-rock perception needs improvement before its predictions can inform obstacle decisions. The present work provides a reproducible way to compare assumptions and expose failures, rather than a validated final vehicle design.
-
 ### Quick start: rover demo
 
 ```sh
@@ -102,8 +98,6 @@ python3 -m http.server 8000 --directory mars-rover-demo/dist
 ```
 
 Open <http://localhost:8000>. Three.js and OrbitControls load from a CDN, so an internet connection is required. All browser logic and styles are in one HTML file; terrain and camera assets are local static files.
-
-[Hosted demo (owner-private)](https://mars-rover-terrain-lab.finn-zhang626.chatgpt.site) · [Download demo bundle](mars-rover-demo.zip)
 
 The demo includes six terrain-following wheels, adjustable diameter/width/wheel span, estimated contact pressure, sampled underbody clearance, perfect/model perception, missed-obstacle encounter counts, and real AI4MARS camera/prediction replay.
 
