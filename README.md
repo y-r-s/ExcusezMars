@@ -6,6 +6,8 @@ This is the repo of team ExcusezMars for Mars City Hackathon - GirlWhoML x Physi
 This repository contains the completed AI4MARS U-Net baseline, reproducible training artifacts, result visualization, and a single-page Three.js rover geometry demo on real HiRISE terrain.
 
 <img src="arma_logo.svg" width="400">
+
+
 ## ARMA - The VW Beetle ON MARS
 
 ARMA explores a simple question: what would a compact utility vehicle for Mars look like if its design were informed by terrain perception and first-order engineering calculations? We started with the proportions of a VW Beetle and the six-wheel, rocker-bogie concept used by Mars rovers, then defined a **2,000 kg total operating mass**, including the vehicle, cargo and two astronauts. The goal is to connect vehicle geometry, terrain conditions and mobility requirements in one demonstrator.
