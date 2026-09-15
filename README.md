@@ -53,9 +53,7 @@ These figures compare geometry at the **same assumed indentation**; they do not 
 
 ### Vehicle calculations: body dimensions and clearance
 
-The original Beetle-inspired reference was **4,140 × 1,600 mm**. The current imported 3D body has a **4,272 × 2,040 mm bounding box** at the default 2,700 mm wheel span. These should not be presented as the same geometry.
-
-Using the current body's 2,040 mm width, 600 mm external wheels and the code's 80 mm body-to-wheel gap on each side:
+Using the current 3D body's 2,040 mm width, 600 mm external wheels and the code's 80 mm body-to-wheel gap on each side:
 
 ```text
 Wheel-center track = 2,040 + 2 × 80 + 600 = 2,800 mm
