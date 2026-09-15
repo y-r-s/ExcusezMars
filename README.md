@@ -5,6 +5,10 @@ This is the repo of team ExcusezMars for Mars City Hackathon - GirlWhoML x Physi
 
 This repository contains the completed AI4MARS U-Net baseline, reproducible training artifacts, English result visualization, and a single-page Three.js rover geometry demo on real HiRISE terrain.
 
+## ARMA - The VW Beetle ON MARS
+
+When we started, our objective was to use ML to optimise a vehicle design for Mars. We started by feeding in Mars rover, Earth car data and the payload we want it to be able to carry, what kind of terrain it's dealing with - Mars terrain - obviously. Then we let AI calculate a logical set of data for the vehicle design, including wheel dimension, wheel width, wheelbase length, chassis size etc. After creating the 3d model, we let ML use it to run a simulation on the mars geo data to confirm that it will be able to drive around.
+
 ### Quick start: rover demo
 
 ```sh
